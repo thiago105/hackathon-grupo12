@@ -28,7 +28,7 @@
                 </ul>
             </nav>
         </div>
-        <div class="col-1 d-flex justify-content-center align-items-center"><button type="button" class="btn"
-                id="btnLogin">Login</button></div>
+        <div class="col-1 d-flex justify-content-center align-items-center"><a href="login.php"><button type="button" class="btn"
+                id="btnLogin">Login</button></a></div>
     </div>
 </header>
