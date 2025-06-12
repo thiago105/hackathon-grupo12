@@ -31,10 +31,7 @@ require_once "html/header.php";
             </div>
         </div>
     </div>
-
-
-</body>
-
+    
 </body>
 <?php
 require_once "html/footer.php";
