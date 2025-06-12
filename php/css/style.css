@@ -1,0 +1,60 @@
+/*
+primaria: #0066b3
+secundaria: #87CEEB
+terciaria: #40E0D0
+branco: #FFFFFF
+preto: #000000
+sucesso: #28a745
+erro/falha: #dc3545
+*/
+header{
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5)
+}
+#navBar{
+    width: 100%;
+    height: 80px;
+}
+#navBar #btnLogin{
+    background-color: #87CEEB;
+}
+#navBar #btnLogin:hover{
+    background-color: #0066b3;
+    color: #FFFFFF;
+    border-radius: 16px;
+    transition: 1s;
+}
+#navBar nav ul{
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+#navBar nav ul li a{
+    text-decoration: none;
+    color: #000000;
+    padding: 5px 10px;
+}
+#navBar nav ul li a:hover{
+    text-decoration: none;
+    color: #FFFFFF;
+    background-color: #0066b3;
+    border-radius: 16px;
+    transition: 1s;
+}
+.carousel-item img {
+    height: 500px; /* Defina a altura máxima que desejar */
+    object-fit: cover; /* Faz a imagem cobrir o espaço sem distorcer, cortando o excesso */
+    width: 100%; /* Garante que a largura continue preenchendo o contêiner */
+}
+footer{
+    background-color: #0066b3;
+    color: #FFFFFF;
+}
+footer h3{
+    margin-top: 12px;
+}
+footer #whats span a, footer #git p a{
+    text-decoration: none;
+    color: #FFFFFF;
+}
