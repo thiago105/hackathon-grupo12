@@ -11,7 +11,7 @@ public class EventosDao extends Dao implements DaoInterface {
     public Boolean insert(Object entity) {
         try {
             var evento = (Eventos) entity;
-            var insertSql = "INSERT INTO eventos (nome, data_inicio, data_fim, hora, endereco, foto_url) VALUES (?, ?, ?, ?, ?, ?)";
+            var insertSql = "INSERT INTO eventos (nome, data_inicio, data_fim, hora, endereco, foto_url, curso_id, palestrante_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             var ps = getConnection().prepareStatement(insertSql);
             ps.setString(1, evento.getNome());
             ps.setDate(2, java.sql.Date.valueOf(evento.getDataInicio()));
@@ -19,6 +19,8 @@ public class EventosDao extends Dao implements DaoInterface {
             ps.setTime(4, java.sql.Time.valueOf(evento.getHora()));
             ps.setString(5, evento.getEndereco());
             ps.setString(6, evento.getFotoUrl());
+            ps.setInt(7, evento.getCurso_id());
+            ps.setInt(8, evento.getPalestrante_id());
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -40,6 +42,8 @@ public class EventosDao extends Dao implements DaoInterface {
             ps.setString(5, evento.getEndereco());
             ps.setString(6, evento.getFotoUrl());
             ps.setLong(7, evento.getId());
+            ps.setInt(7, evento.getCurso_id());
+            ps.setInt(8, evento.getPalestrante_id());
             ps.executeUpdate();
             return true;
         } catch (Exception e) {

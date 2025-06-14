@@ -1,6 +1,12 @@
 package grupo12.gui;
 
+
 import grupo12.model.Eventos;
+import grupo12.model.Palestrantes;
+import grupo12.model.Cursos;
+import grupo12.dao.PalestrantesDao;
+import grupo12.dao.CursosDao;
+
 import grupo12.service.EventosService;
 
 import javax.swing.*;
@@ -20,6 +26,10 @@ public class EventosGui extends JFrame {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private JTextField tfId, tfNome, tfDataInicio, tfDataFim, tfHora, tfEndereco, tfFotoUrl;
+    private JComboBox<String> cbPalestrantes, cbCursos;
+    private Long[] idsPalestrantes = {1L, 2L, 3L}; // IDs mockados
+    private Long[] idsCursos = {101L, 102L, 103L}; // IDs mockados
+
     private JButton btSalvarNovo, btEditar, btExcluir, btLimpar, btSelecionarFoto;
     private JTable tbEventos;
     private final EventosService service;
@@ -49,6 +59,15 @@ public class EventosGui extends JFrame {
         tfFotoUrl.setEditable(false);
         btSelecionarFoto = new JButton("Selecionar...");
         btSelecionarFoto.addActionListener(this::selecionarFoto);
+
+        cbPalestrantes = new JComboBox<>(new String[]{"Maria Silva", "Carlos Lima", "Ana Paula"});
+        cbCursos = new JComboBox<>(new String[]{"Análise e Desenvolvimento de Sistemas", "Gestão de TI", "Ciência da Computação"});
+
+        painel.add(new JLabel("Palestrante"), utils.montarConstraints(2, 3));
+        painel.add(cbPalestrantes, utils.montarConstraintsParaCampo(3, 3));
+
+        painel.add(new JLabel("Curso"), utils.montarConstraints(0, 5));
+        painel.add(cbCursos, utils.montarConstraintsParaCampo(1, 5));
 
         painel.add(new JLabel("ID"), utils.montarConstraints(0, 0));
         painel.add(tfId, utils.montarConstraintsParaCampo(1, 0));
@@ -207,6 +226,8 @@ public class EventosGui extends JFrame {
         tfEndereco.setText(null);
         tfFotoUrl.setText(null);
         tbEventos.clearSelection();
+        cbPalestrantes.setSelectedIndex(-1);
+        cbCursos.setSelectedIndex(-1);
         this.eventoSelecionadoParaEdicao = null;
     }
 
@@ -224,6 +245,12 @@ public class EventosGui extends JFrame {
             evento.setDataInicio(LocalDate.parse(tfDataInicio.getText(), DATE_FORMATTER));
             evento.setDataFim(LocalDate.parse(tfDataFim.getText(), DATE_FORMATTER));
             evento.setHora(LocalTime.parse(tfHora.getText(), TIME_FORMATTER));
+
+            int indexPalestrante = cbPalestrantes.getSelectedIndex();
+            int indexCurso = cbCursos.getSelectedIndex();
+            evento.setPalestrante_id(Math.toIntExact(indexPalestrante >= 0 ? idsPalestrantes[indexPalestrante] : null));
+            evento.setCurso_id(Math.toIntExact(indexCurso >= 0 ? idsCursos[indexCurso] : null));
+
             return evento;
         } catch (DateTimeParseException e) {
             JOptionPane.showMessageDialog(this, "Erro de formato. Verifique se a data está como dd/MM/aaaa e a hora como HH:MM.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);

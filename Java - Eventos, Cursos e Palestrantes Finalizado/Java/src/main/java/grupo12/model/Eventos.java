@@ -12,6 +12,8 @@ public class Eventos {
     private LocalTime hora;
     private String endereco;
     private String fotoUrl;
+    private int curso_id;
+    private int palestrante_id;
 
     public Eventos() {
     }
@@ -81,4 +83,19 @@ public class Eventos {
     public void setFotoUrl(String fotoUrl) {
         this.fotoUrl = fotoUrl;
     }
+
+    public int getCurso_id() {
+        return curso_id;
+    }
+    public void setCurso_id(int curso_id) {
+        this.curso_id = curso_id;
+    }
+
+    public int getPalestrante_id() {
+        return palestrante_id;
+    }
+    public void setPalestrante_id(int palestrante_id) {
+        this.palestrante_id = palestrante_id;
+    }
+
 }
