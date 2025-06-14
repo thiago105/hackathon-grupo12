@@ -27,9 +27,8 @@ public class EventosGui extends JFrame {
 
     private JTextField tfId, tfNome, tfDataInicio, tfDataFim, tfHora, tfEndereco, tfFotoUrl;
     private JComboBox<String> cbPalestrantes, cbCursos;
-    private Long[] idsPalestrantes = {1L, 2L, 3L}; // IDs mockados
-    private Long[] idsCursos = {1L, 2L, 3L}; // IDs mockados
-
+    private Long[] idsPalestrantes = {1L, 2L, 3L};
+    private Long[] idsCursos = {1L, 2L, 3L};
     private JButton btSalvarNovo, btEditar, btExcluir, btLimpar, btSelecionarFoto;
     private JTable tbEventos;
     private final EventosService service;
@@ -63,12 +62,6 @@ public class EventosGui extends JFrame {
         cbPalestrantes = new JComboBox<>(new String[]{"Maria Silva", "Carlos Lima", "Ana Paula"});
         cbCursos = new JComboBox<>(new String[]{"Análise e Desenvolvimento de Sistemas", "Gestão de TI", "Ciência da Computação"});
 
-        painel.add(new JLabel("Palestrante"), utils.montarConstraints(2, 3));
-        painel.add(cbPalestrantes, utils.montarConstraintsParaCampo(3, 3));
-
-        painel.add(new JLabel("Curso"), utils.montarConstraints(0, 5));
-        painel.add(cbCursos, utils.montarConstraintsParaCampo(1, 5));
-
         painel.add(new JLabel("ID"), utils.montarConstraints(0, 0));
         painel.add(tfId, utils.montarConstraintsParaCampo(1, 0));
         painel.add(new JLabel("Nome"), utils.montarConstraints(0, 1));
@@ -77,15 +70,19 @@ public class EventosGui extends JFrame {
         painel.add(tfDataInicio, utils.montarConstraintsParaCampo(1, 2));
         painel.add(new JLabel("Data Fim (dd/MM/aaaa)"), utils.montarConstraints(0, 3));
         painel.add(tfDataFim, utils.montarConstraintsParaCampo(1, 3));
-        painel.add(new JLabel("Horário (HH:MM)"), utils.montarConstraints(2, 0));
-        painel.add(tfHora, utils.montarConstraintsParaCampo(3, 0));
-        painel.add(new JLabel("Endereço"), utils.montarConstraints(2, 1));
-        painel.add(tfEndereco, utils.montarConstraintsParaCampo(3, 1));
-        painel.add(new JLabel("URL da Foto"), utils.montarConstraints(2, 2));
+        painel.add(new JLabel("Curso"), utils.montarConstraints(2, 0));
+        painel.add(cbCursos, utils.montarConstraintsParaCampo(3, 0));
+        painel.add(new JLabel("Palestrante"), utils.montarConstraints(2, 1));
+        painel.add(cbPalestrantes, utils.montarConstraintsParaCampo(3, 1));
+        painel.add(new JLabel("Hora (HH:MM)"), utils.montarConstraints(2, 2));
+        painel.add(tfHora, utils.montarConstraintsParaCampo(3, 2));
+        painel.add(new JLabel("Endereço"), utils.montarConstraints(2, 3));
+        painel.add(tfEndereco, utils.montarConstraintsParaCampo(3, 3));
+        painel.add(new JLabel("URL da Foto"), utils.montarConstraints(2, 4));
         JPanel painelFoto = new JPanel(new BorderLayout(5, 0));
         painelFoto.add(tfFotoUrl, BorderLayout.CENTER);
         painelFoto.add(btSelecionarFoto, BorderLayout.EAST);
-        painel.add(painelFoto, utils.montarConstraintsParaCampo(3, 2));
+        painel.add(painelFoto, utils.montarConstraintsParaCampo(3, 4));
 
         btSalvarNovo = new JButton("Salvar Novo");
         btSalvarNovo.addActionListener(this::salvar);
