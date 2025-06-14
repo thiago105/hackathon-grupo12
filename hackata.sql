@@ -23,7 +23,6 @@ CREATE TABLE palestrantes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     mini_curriculo TEXT,
-    tema VARCHAR(150),
     foto_url VARCHAR(255)
 );
 
