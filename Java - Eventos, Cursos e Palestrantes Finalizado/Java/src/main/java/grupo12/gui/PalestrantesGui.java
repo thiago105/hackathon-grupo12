@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 
 public class PalestrantesGui extends JFrame {
 
-    private JTextField tfId, tfNome, tfTema, tfFotoUrl;
+    private JTextField tfId, tfNome, tfFotoUrl;
     private JTextField tfMiniCurriculo;
     private JButton btSalvarNovo, btAlterar, btExcluir, btLimpar, btSelecionarFoto;
     private JTable tbPalestrantes;
@@ -38,7 +38,6 @@ public class PalestrantesGui extends JFrame {
         tfId.setEditable(false);
         tfNome = new JTextField(20);
         tfMiniCurriculo = new JTextField(20);
-        tfTema = new JTextField(20);
         tfFotoUrl = new JTextField(20);
         tfFotoUrl.setEditable(false);
         btSelecionarFoto = new JButton("Selecionar...");
@@ -48,8 +47,6 @@ public class PalestrantesGui extends JFrame {
         painel.add(tfNome, utils.montarConstraintsParaCampo(1, 1));
         painel.add(new JLabel("Mini Currículo"), utils.montarConstraints(0, 2));
         painel.add(tfMiniCurriculo, utils.montarConstraintsParaCampo(1, 2));
-        painel.add(new JLabel("Tema da Palestra"), utils.montarConstraints(2, 0));
-        painel.add(new JScrollPane(tfTema), utils.montarConstraintsParaCampo(3, 0));
         painel.add(new JLabel("URL da Foto"), utils.montarConstraints(2, 1));
         JPanel painelFoto = new JPanel(new BorderLayout(5,0));
         painelFoto.add(tfFotoUrl, BorderLayout.CENTER);
@@ -75,7 +72,7 @@ public class PalestrantesGui extends JFrame {
 
     private JScrollPane montarPainelSaida() {
         tbPalestrantes = new JTable();
-        tbPalestrantes.setModel(new DefaultTableModel(new Object[]{"ID", "Nome", "Mini Curriculo", "Tema da Palestra"}, 0));
+        tbPalestrantes.setModel(new DefaultTableModel(new Object[]{"ID", "Nome", "Mini Curriculo"}, 0));
         tbPalestrantes.setDefaultEditor(Object.class, null);
         tbPalestrantes.getSelectionModel().addListSelectionListener(this::selecionarLinha);
         var centerRenderer = new DefaultTableCellRenderer();
@@ -89,13 +86,12 @@ public class PalestrantesGui extends JFrame {
     private void atualizarTabela() {
         var tableModel = (DefaultTableModel) tbPalestrantes.getModel();
         tableModel.setRowCount(0);
-        service.listarTodos().forEach(p -> tableModel.addRow(new Object[]{p.getId(), p.getNome(), p.getMiniCurriculo(), p.getTema()}));
+        service.listarTodos().forEach(p -> tableModel.addRow(new Object[]{p.getId(), p.getNome(), p.getMiniCurriculo()}));
     }
 
     private void limparCampos() {
         tfId.setText("");
         tfNome.setText("");
-        tfTema.setText("");
         tfMiniCurriculo.setText("");
         tfFotoUrl.setText("");
         tbPalestrantes.clearSelection();
@@ -105,7 +101,6 @@ public class PalestrantesGui extends JFrame {
         var p = new Palestrantes();
         p.setId(tfId.getText().isEmpty() ? null : Long.valueOf(tfId.getText()));
         p.setNome(tfNome.getText());
-        p.setTema(tfTema.getText());
         p.setMiniCurriculo(tfMiniCurriculo.getText());
         p.setFotoUrl(tfFotoUrl.getText());
         return p;
@@ -163,7 +158,6 @@ public class PalestrantesGui extends JFrame {
                 tfId.setText(p.getId().toString());
                 tfNome.setText(p.getNome());
                 tfMiniCurriculo.setText(p.getMiniCurriculo());
-                tfTema.setText(p.getTema());
                 tfFotoUrl.setText(p.getFotoUrl());
             }
         }

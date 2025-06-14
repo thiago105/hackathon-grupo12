@@ -12,11 +12,10 @@ public class PalestrantesDao extends Dao implements DaoInterface {
     public Boolean insert(Object entity) {
         try {
             var palestrante = (Palestrantes) entity;
-            var sql = "INSERT INTO palestrantes (nome, tema, mini_curriculo, foto_url) VALUES (?, ?, ?, ?)";
+            var sql = "INSERT INTO palestrantes (nome, mini_curriculo, foto_url) VALUES (?, ?, ?)";
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, palestrante.getNome());
             ps.setString(2, palestrante.getMiniCurriculo());
-            ps.setString(3, palestrante.getTema());
             ps.setString(4, palestrante.getFotoUrl());
             ps.execute();
             return true;
@@ -30,10 +29,9 @@ public class PalestrantesDao extends Dao implements DaoInterface {
     public Boolean update(Object entity) {
         try {
             var palestrante = (Palestrantes) entity;
-            var sql = "UPDATE palestrantes SET nome = ?, mini_curriculo = ?, tema = ?, foto_url = ? WHERE id = ?";
+            var sql = "UPDATE palestrantes SET nome = ?, mini_curriculo = ?, foto_url = ? WHERE id = ?";
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, palestrante.getNome());
-            ps.setString(2, palestrante.getTema());
             ps.setString(3, palestrante.getMiniCurriculo());
             ps.setString(4, palestrante.getFotoUrl());
             ps.setLong(5, palestrante.getId());
@@ -60,11 +58,10 @@ public class PalestrantesDao extends Dao implements DaoInterface {
     }
 
     private Palestrantes buildFromResult(ResultSet rs) throws SQLException {
-        return new Palestrantes( // Cria objeto Palestrantes
+        return new Palestrantes(
                 rs.getLong("id"),
                 rs.getString("nome"),
                 rs.getString("mini_curriculo"),
-                rs.getString("tema"),
                 rs.getString("foto_url")
         );
     }

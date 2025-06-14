@@ -14,9 +14,8 @@ public class PalestrantesService {
     }
 
     public boolean salvar(Palestrantes palestrante) {
-        if (palestrante.getNome() == null || palestrante.getNome().trim().isEmpty() ||
-                palestrante.getTema() == null || palestrante.getTema().trim().isEmpty()) {
-            System.err.println("Erro: Nome e Tema são obrigatórios.");
+        if (palestrante.getNome() == null || palestrante.getNome().trim().isEmpty()) {
+            System.err.println("Erro: Nome é obrigatório.");
             return false;
         }
         return dao.insert(palestrante);
