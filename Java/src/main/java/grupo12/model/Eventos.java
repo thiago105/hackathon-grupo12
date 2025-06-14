@@ -26,7 +26,6 @@ public class Eventos {
         this.fotoUrl = fotoUrl;
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }

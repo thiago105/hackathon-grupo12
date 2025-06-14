@@ -26,6 +26,22 @@ public class EventosService {
         return this.dao.insert(evento);
     }
 
+    public Boolean atualizar(Eventos evento) {
+        if (evento.getId() == null || evento.getId() <= 0) {
+            System.err.println("Erro: ID inválido para atualização.");
+            return false;
+        }
+        return this.dao.update(evento);
+    }
+
+    public Boolean excluir(Long id) {
+        if (id == null || id <= 0) {
+            System.err.println("Erro: ID inválido para exclusão.");
+            return false;
+        }
+        return this.dao.delete(id);
+    }
+
     public List<Eventos> listarTodos() {
         return this.dao.selectAll().stream()
                 .map(obj -> (Eventos) obj)

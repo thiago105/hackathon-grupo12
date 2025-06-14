@@ -28,6 +28,46 @@ public class EventosDao extends Dao implements DaoInterface {
     }
 
     @Override
+    public Boolean update(Object entity) {
+        try {
+            var evento = (Eventos) entity;
+            var updateSql = "UPDATE eventos SET nome = ?, data_inicio = ?, data_fim = ?, hora = ?, endereco = ?, foto_url = ? WHERE id = ?";
+            var ps = getConnection().prepareStatement(updateSql);
+            ps.setString(1, evento.getNome());
+            ps.setDate(2, java.sql.Date.valueOf(evento.getDataInicio()));
+            ps.setDate(3, java.sql.Date.valueOf(evento.getDataFim()));
+            ps.setTime(4, java.sql.Time.valueOf(evento.getHora()));
+            ps.setString(5, evento.getEndereco());
+            ps.setString(6, evento.getFotoUrl());
+            ps.setLong(7, evento.getId());
+
+            ps.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Erro ao ATUALIZAR evento: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+
+    @Override
+    public Boolean delete(Long pk) {
+        try {
+            var deleteSql = "DELETE FROM eventos WHERE id = ?";
+            var ps = getConnection().prepareStatement(deleteSql);
+
+            ps.setLong(1, pk);
+
+            ps.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Erro ao DELETAR evento: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
     public List<Object> selectAll() {
         List<Eventos> listaDeEventos = new ArrayList<>();
         try {
@@ -49,21 +89,5 @@ public class EventosDao extends Dao implements DaoInterface {
             System.out.println("Erro ao buscar eventos: " + e.getMessage());
         }
         return new ArrayList<>(listaDeEventos);
-    }
-
-    // --- Métodos de update e delete como placeholders ---
-    @Override
-    public Boolean update(Object entity) {
-        return null;
-    }
-
-    @Override
-    public Boolean delete(Long pk) {
-        return null;
-    }
-
-    @Override
-    public List<Object> select(Long pk) {
-        return List.of();
     }
 }

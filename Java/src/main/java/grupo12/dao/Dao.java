@@ -7,7 +7,6 @@ public class Dao {
 
     private static final String URL = "jdbc:mysql://localhost:3306/hackata?useTimezone=true&serverTimezone=UTC";
     private static final String USER = "root";
-    // ⚠️ IMPORTANTE: Coloque sua senha correta aqui!
     private static final String PASSWORD = "";
 
     private Connection connection;
