@@ -40,7 +40,6 @@ public class EventosDao extends Dao implements DaoInterface {
             ps.setString(5, evento.getEndereco());
             ps.setString(6, evento.getFotoUrl());
             ps.setLong(7, evento.getId());
-
             ps.executeUpdate();
             return true;
         } catch (Exception e) {
@@ -49,22 +48,43 @@ public class EventosDao extends Dao implements DaoInterface {
         }
     }
 
-
-
     @Override
     public Boolean delete(Long pk) {
         try {
             var deleteSql = "DELETE FROM eventos WHERE id = ?";
             var ps = getConnection().prepareStatement(deleteSql);
-
             ps.setLong(1, pk);
-
             ps.executeUpdate();
             return true;
         } catch (Exception e) {
             System.out.println("Erro ao DELETAR evento: " + e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public Object select(Long pk) {
+        var evento = new Eventos();
+        try {
+            var selectSql = "SELECT * FROM eventos WHERE id = ?";
+            var ps = getConnection().prepareStatement(selectSql);
+            ps.setLong(1, pk);
+            var rs = ps.executeQuery();
+
+            if (rs.next()) {
+                evento.setId(rs.getLong("id"));
+                evento.setNome(rs.getString("nome"));
+                evento.setDataInicio(rs.getDate("data_inicio").toLocalDate());
+                evento.setDataFim(rs.getDate("data_fim").toLocalDate());
+                evento.setHora(rs.getTime("hora").toLocalTime());
+                evento.setEndereco(rs.getString("endereco"));
+                evento.setFotoUrl(rs.getString("foto_url"));
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar evento por ID: " + e.getMessage());
+        }
+        return evento;
     }
 
     @Override

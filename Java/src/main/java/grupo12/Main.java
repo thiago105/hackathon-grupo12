@@ -1,6 +1,7 @@
 package grupo12;
 
 import grupo12.gui.EventosGui;
+import grupo12.service.EventosService; // Importa o serviço
 import javax.swing.SwingUtilities;
 
 public class Main {
@@ -10,7 +11,8 @@ public class Main {
     }
 
     private static void iniciar() {
-        var eventoGui = new EventosGui();
+        var eventosService = new EventosService();
+        var eventoGui = new EventosGui(eventosService);
         eventoGui.setVisible(true);
     }
 }

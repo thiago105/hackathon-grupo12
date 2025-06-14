@@ -42,6 +42,17 @@ public class EventosService {
         return this.dao.delete(id);
     }
 
+    public Eventos buscarPorId(Long id) {
+        if (id == null || id <= 0) {
+            return null;
+        }
+        Eventos evento = (Eventos) this.dao.select(id);
+        if (evento != null && evento.getId() != null) {
+            return evento;
+        }
+        return null;
+    }
+
     public List<Eventos> listarTodos() {
         return this.dao.selectAll().stream()
                 .map(obj -> (Eventos) obj)

@@ -5,6 +5,7 @@ import grupo12.service.EventosService;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,8 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EventosGui extends JFrame {
 
@@ -23,31 +22,25 @@ public class EventosGui extends JFrame {
     private JTextField tfId, tfNome, tfDataInicio, tfDataFim, tfHora, tfEndereco, tfFotoUrl;
     private JButton btSalvarNovo, btAlterar, btExcluir, btLimpar, btSelecionarFoto;
     private JTable tbEventos;
-    private DefaultTableModel tableModel;
 
-    private EventosService service;
-    private List<Eventos> listaDeEventosCache;
+    private final EventosService service;
+    private Eventos eventoSelecionadoParaEdicao;
 
-    public EventosGui() {
+    public EventosGui(EventosService eventosService) {
+        this.service = eventosService;
+
         setTitle("Cadastro de Eventos");
         setSize(900, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        this.service = new EventosService();
-        this.listaDeEventosCache = new ArrayList<>();
-
         getContentPane().add(montarPainelEntrada(), BorderLayout.NORTH);
         getContentPane().add(montarPainelSaida(), BorderLayout.CENTER);
-
-        atualizarTabela();
     }
 
     private JPanel montarPainelEntrada() {
         var painel = new JPanel(new GridBagLayout());
         var utils = new GuiUtils();
-
-        // ... (as outras inicializações de tfId, tfNome, etc. continuam iguais)
         tfId = new JTextField(20);
         tfId.setEditable(false);
         tfNome = new JTextField(20);
@@ -56,13 +49,9 @@ public class EventosGui extends JFrame {
         tfHora = new JTextField(20);
         tfEndereco = new JTextField(20);
         tfFotoUrl = new JTextField(20);
-        // --- INÍCIO DA MUDANÇA ---
-        tfFotoUrl.setEditable(false); // Torna o campo de texto não editável
+        tfFotoUrl.setEditable(false);
         btSelecionarFoto = new JButton("Selecionar...");
         btSelecionarFoto.addActionListener(this::selecionarFoto);
-        // --- FIM DA MUDANÇA ---
-
-        // A montagem dos outros campos continua a mesma
         painel.add(new JLabel("ID"), utils.montarConstraints(0, 0));
         painel.add(tfId, utils.montarConstraintsParaCampo(1, 0));
         painel.add(new JLabel("Nome"), utils.montarConstraints(0, 1));
@@ -75,26 +64,21 @@ public class EventosGui extends JFrame {
         painel.add(tfHora, utils.montarConstraintsParaCampo(3, 0));
         painel.add(new JLabel("Endereço"), utils.montarConstraints(2, 1));
         painel.add(tfEndereco, utils.montarConstraintsParaCampo(3, 1));
-
-        // --- INÍCIO DA MUDANÇA NO LAYOUT DA URL DA FOTO ---
         painel.add(new JLabel("URL da Foto"), utils.montarConstraints(2, 2));
-
-        // Cria um painel interno para juntar o campo de texto e o botão
         JPanel painelFoto = new JPanel(new BorderLayout(5, 0));
         painelFoto.add(tfFotoUrl, BorderLayout.CENTER);
         painelFoto.add(btSelecionarFoto, BorderLayout.EAST);
-
-        // Adiciona o painel interno (com campo+botão) ao painel principal
         painel.add(painelFoto, utils.montarConstraintsParaCampo(3, 2));
-        // --- FIM DA MUDANÇA ---
 
-        // ... (a criação dos outros botões continua a mesma)
         btSalvarNovo = new JButton("Salvar Novo");
         btSalvarNovo.addActionListener(this::salvar);
+
         btAlterar = new JButton("Alterar Selecionado");
         btAlterar.addActionListener(this::alterar);
+
         btExcluir = new JButton("Excluir Selecionado");
         btExcluir.addActionListener(this::excluir);
+
         btLimpar = new JButton("Limpar Campos");
         btLimpar.addActionListener(e -> limparCampos());
 
@@ -104,8 +88,46 @@ public class EventosGui extends JFrame {
         painelBotoes.add(btExcluir);
         painelBotoes.add(btLimpar);
         painel.add(painelBotoes, utils.montarConstraints(0, 4, 4));
-
         return painel;
+    }
+
+    private JScrollPane montarPainelSaida() {
+        tbEventos = new JTable();
+        tbEventos.setDefaultEditor(Object.class, null);
+        tbEventos.getTableHeader().setReorderingAllowed(false);
+        tbEventos.getSelectionModel().addListSelectionListener(this::selecionarLinha);
+        tbEventos.setModel(montarTableModel());
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < tbEventos.getColumnCount(); i++) {
+            tbEventos.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        return new JScrollPane(tbEventos);
+    }
+
+    private DefaultTableModel montarTableModel() {
+        var tableModel = new DefaultTableModel();
+        tableModel.addColumn("ID");
+        tableModel.addColumn("Nome");
+        tableModel.addColumn("Início");
+        tableModel.addColumn("Fim");
+        tableModel.addColumn("Hora");
+        tableModel.addColumn("Endereço");
+        service.listarTodos().forEach(e ->
+                tableModel.addRow(new Object[]{
+                        e.getId(),
+                        e.getNome(),
+                        e.getDataInicio().format(DATE_FORMATTER),
+                        e.getDataFim().format(DATE_FORMATTER),
+                        e.getHora().format(TIME_FORMATTER),
+                        e.getEndereco()
+                })
+        );
+        return tableModel;
+    }
+
+    private void atualizarTabela() {
+        tbEventos.setModel(montarTableModel());
     }
 
     private void salvar(ActionEvent event) {
@@ -113,35 +135,81 @@ public class EventosGui extends JFrame {
             JOptionPane.showMessageDialog(this, "Para salvar um novo evento, limpe os campos primeiro.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
         Eventos evento = getEventoDoFormulario();
-        if (evento == null) return;
-
-        if (service.salvar(evento)) {
+        if (evento != null && service.salvar(evento)) {
             JOptionPane.showMessageDialog(this, "Evento salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             limparCampos();
             atualizarTabela();
-        } else {
+        } else if (evento != null) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar o evento.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void alterar(ActionEvent event) {
-        if (tfId.getText().isEmpty()) {
+        if (tfId.getText().isEmpty() || this.eventoSelecionadoParaEdicao == null) {
             JOptionPane.showMessageDialog(this, "Selecione um evento da tabela para poder alterar.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
-        Eventos evento = getEventoDoFormulario();
-        if (evento == null) return;
-
-        if(service.atualizar(evento)) {
-            JOptionPane.showMessageDialog(this, "Evento alterado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            limparCampos();
-            atualizarTabela();
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao alterar o evento.", "Erro", JOptionPane.ERROR_MESSAGE);
+        Eventos eventoDoFormulario = getEventoDoFormulario();
+        if (eventoDoFormulario != null) {
+            if (eventoSelecionadoParaEdicao != null && eventoSelecionadoParaEdicao.equals(eventoDoFormulario)) {
+                JOptionPane.showMessageDialog(this, "Nenhuma alteração foi feita nos dados do evento.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            if(service.atualizar(eventoDoFormulario)) {
+                JOptionPane.showMessageDialog(this, "Evento alterado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                limparCampos();
+                atualizarTabela();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao alterar o evento.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         }
+    }
+
+    private void excluir(ActionEvent event) {
+        if (tfId.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Selecione um evento na tabela para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int resposta = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o evento selecionado?", "Confirmação de Exclusão", JOptionPane.YES_NO_OPTION);
+        if (resposta == JOptionPane.YES_OPTION) {
+            try {
+                Long id = Long.valueOf(tfId.getText());
+                if (service.excluir(id)) {
+                    JOptionPane.showMessageDialog(this, "Evento excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    limparCampos();
+                    atualizarTabela();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao excluir evento.", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao excluir: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void selecionarFoto(ActionEvent event) {
+        JFileChooser seletorDeArquivo = new JFileChooser();
+        seletorDeArquivo.setDialogTitle("Selecione uma imagem para o evento");
+        seletorDeArquivo.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                "Arquivos de Imagem", "jpg", "jpeg", "png", "gif"));
+        int resultado = seletorDeArquivo.showOpenDialog(this);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            java.io.File arquivoSelecionado = seletorDeArquivo.getSelectedFile();
+            tfFotoUrl.setText(arquivoSelecionado.getAbsolutePath());
+        }
+    }
+
+    private void limparCampos() {
+        tfId.setText(null);
+        tfNome.setText(null);
+        tfDataInicio.setText(null);
+        tfDataFim.setText(null);
+        tfHora.setText(null);
+        tfEndereco.setText(null);
+        tfFotoUrl.setText(null);
+        tbEventos.clearSelection();
+        this.eventoSelecionadoParaEdicao = null;
     }
 
     private Eventos getEventoDoFormulario() {
@@ -149,7 +217,6 @@ public class EventosGui extends JFrame {
             JOptionPane.showMessageDialog(this, "Nome e Data de Início são obrigatórios.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return null;
         }
-
         try {
             var evento = new Eventos();
             evento.setId(tfId.getText().isEmpty() ? null : Long.valueOf(tfId.getText()));
@@ -169,110 +236,21 @@ public class EventosGui extends JFrame {
         }
     }
 
-    private void limparCampos() {
-        tfId.setText(null);
-        tfNome.setText(null);
-        tfDataInicio.setText(null);
-        tfDataFim.setText(null);
-        tfHora.setText(null);
-        tfEndereco.setText(null);
-        tfFotoUrl.setText(null);
-        tbEventos.clearSelection();
-    }
-
-    private JScrollPane montarPainelSaida() {
-        tableModel = new DefaultTableModel();
-        tableModel.addColumn("ID");
-        tableModel.addColumn("Nome");
-        tableModel.addColumn("Início");
-        tableModel.addColumn("Fim");
-        tableModel.addColumn("Hora");
-        tableModel.addColumn("Endereço");
-        tbEventos = new JTable(tableModel);
-        tbEventos.setDefaultEditor(Object.class, null);
-        tbEventos.getSelectionModel().addListSelectionListener(this::selecionarLinha);
-        return new JScrollPane(tbEventos);
-    }
-
-    private void atualizarTabela() {
-        tableModel.setRowCount(0);
-        this.listaDeEventosCache = service.listarTodos();
-
-        if (this.listaDeEventosCache != null) {
-            for (Eventos e : this.listaDeEventosCache) {
-                tableModel.addRow(new Object[]{
-                        e.getId(),
-                        e.getNome(),
-                        e.getDataInicio().format(DATE_FORMATTER),
-                        e.getDataFim().format(DATE_FORMATTER),
-                        e.getHora().format(TIME_FORMATTER),
-                        e.getEndereco()
-                });
-            }
-        }
-    }
-
-    private void excluir(ActionEvent event) {
-        if (tfId.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Selecione um evento na tabela para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int resposta = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o evento selecionado?", "Confirmação de Exclusão", JOptionPane.YES_NO_OPTION);
-
-        if (resposta == JOptionPane.YES_OPTION) {
-            try {
-                Long id = Long.valueOf(tfId.getText());
-                if (service.excluir(id)) {
-                    JOptionPane.showMessageDialog(this, "Evento excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                    limparCampos();
-                    atualizarTabela();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao excluir evento.", "Erro", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao excluir: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    /**
-     * Abre uma janela para o usuário selecionar um arquivo de imagem.
-     */
-    private void selecionarFoto(ActionEvent event) {
-        // Cria o seletor de arquivos
-        JFileChooser seletorDeArquivo = new JFileChooser();
-        seletorDeArquivo.setDialogTitle("Selecione uma imagem para o evento");
-
-        // Define um filtro para mostrar apenas arquivos de imagem comuns
-        seletorDeArquivo.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
-                "Arquivos de Imagem", "jpg", "jpeg", "png", "gif"));
-
-        // Mostra a janela de diálogo
-        int resultado = seletorDeArquivo.showOpenDialog(this);
-
-        // Verifica se o usuário selecionou um arquivo e clicou em "Abrir"
-        if (resultado == JFileChooser.APPROVE_OPTION) {
-            // Pega o arquivo que foi selecionado
-            java.io.File arquivoSelecionado = seletorDeArquivo.getSelectedFile();
-            // Coloca o caminho completo do arquivo no campo de texto
-            tfFotoUrl.setText(arquivoSelecionado.getAbsolutePath());
-        }
-    }
-
     private void selecionarLinha(ListSelectionEvent event) {
         if (!event.getValueIsAdjusting()) {
             int linhaSelecionada = tbEventos.getSelectedRow();
             if (linhaSelecionada != -1) {
-                Eventos eventoSelecionado = this.listaDeEventosCache.get(linhaSelecionada);
-
-                tfId.setText(eventoSelecionado.getId().toString());
-                tfNome.setText(eventoSelecionado.getNome());
-                tfDataInicio.setText(eventoSelecionado.getDataInicio().format(DATE_FORMATTER));
-                tfDataFim.setText(eventoSelecionado.getDataFim().format(DATE_FORMATTER));
-                tfHora.setText(eventoSelecionado.getHora().format(TIME_FORMATTER));
-                tfEndereco.setText(eventoSelecionado.getEndereco());
-                tfFotoUrl.setText(eventoSelecionado.getFotoUrl());
+                Long id = (Long) tbEventos.getValueAt(linhaSelecionada, 0);
+                this.eventoSelecionadoParaEdicao = service.buscarPorId(id);
+                if (this.eventoSelecionadoParaEdicao != null) {
+                    tfId.setText(eventoSelecionadoParaEdicao.getId().toString());
+                    tfNome.setText(eventoSelecionadoParaEdicao.getNome());
+                    tfDataInicio.setText(eventoSelecionadoParaEdicao.getDataInicio().format(DATE_FORMATTER));
+                    tfDataFim.setText(eventoSelecionadoParaEdicao.getDataFim().format(DATE_FORMATTER));
+                    tfHora.setText(eventoSelecionadoParaEdicao.getHora().format(TIME_FORMATTER));
+                    tfEndereco.setText(eventoSelecionadoParaEdicao.getEndereco());
+                    tfFotoUrl.setText(eventoSelecionadoParaEdicao.getFotoUrl());
+                }
             }
         }
     }
