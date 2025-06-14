@@ -1,24 +1,15 @@
 import { Router } from 'express'
 
-import eventosRouter from './eventos'
-import palestrantesRouter from './palestrantes'
-import inscricoesRouter from './inscricoes'
-import usuariosRouter from './usuarios'
-import sessionRouter from './session'
-import certificadosRouter from './certificados'
+import categoria from './categorias'
+import usuarios from './usuarios'
+import session from './session'
 import autenticacao from '../middlewares/autenticacao'
 
 const routes = Router()
 
-// Rotas públicas
-routes.use('/session', sessionRouter)
-routes.use('/usuarios', usuariosRouter)
-
-// Rotas protegidas
+routes.use('/usuarios', usuarios)
+routes.use('/session', session)
 routes.use(autenticacao)
-routes.use('/eventos', eventosRouter)
-routes.use('/palestrantes', palestrantesRouter)
-routes.use('/inscricoes', inscricoesRouter)
-routes.use('/certificados', certificadosRouter)
+routes.use('/categorias', autenticacao, categoria)
 
 export default routes

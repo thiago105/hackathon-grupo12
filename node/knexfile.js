@@ -2,33 +2,26 @@ const path = require('path')
 
 module.exports = {
     development: {
-        client: 'mysql2',
+        client: 'sqlite3',
         connection: {
-            host: 'localhost',
-            user: 'root',
-            password: '',
-            database: 'hackata'
+            filename: path.resolve(
+                __dirname, 'src', 'database', 'database.db'
+            )
+        },
+        pool: {
+            afterCreate: (conn, cb) => (
+                conn.run('PRAGMA foreign_keys = ON', cb)
+            )
         },
         migrations: {
-            directory: './src/database/migrations'
+            directory: path.resolve(
+                __dirname,
+                'src',
+                'database',
+                'knex',
+                'migrations'
+            )
         },
-        seeds: {
-            directory: './src/database/seeds'
-        }
-    },
-    production: {
-        client: 'mysql2',
-        connection: {
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME
-        },
-        migrations: {
-            directory: './src/database/migrations'
-        },
-        seeds: {
-            directory: './src/database/seeds'
-        }
+        useNullAsDefault: true
     }
 }

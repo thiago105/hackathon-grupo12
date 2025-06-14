@@ -1,46 +1,48 @@
 // const express = require('express')
-import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
-import { config } from 'dotenv'
 import routes from './routes'
 
 import { ZodError } from 'zod'
-
-// Carregar variáveis de ambiente
-config()
 
 const app = express()
 app.use(cors())
 
 app.use(express.json())
 
+const PORT = 3001
+
 app.use(routes)
 
-// Middleware de erro (deve ser o último)
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+app.use((
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (res.headersSent) {
-    next(err);
-    return;
+    return next(error);
   }
 
-  if (err instanceof ZodError) {
-    res.status(400).json({
-      message: "Erro de validação",
-      issues: err.format()
-    });
-    return;
+  if (error instanceof ZodError) {
+    res.status(400)
+      .send({
+        message: "Erro de validação",
+        issues: error.format()
+      })
+      return
   }
 
-  console.error(err);
+  console.log(error)
   res.status(500).json({
-    message: "Erro interno do servidor"
-  });
-};
+    status: "erro",
+    message: "Lascou"
+  })
+  return
+})
 
-app.use(errorHandler);
-
-// Iniciar servidor
-const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log('Express iniciou na porta:' +
+    PORT
+  )
 })

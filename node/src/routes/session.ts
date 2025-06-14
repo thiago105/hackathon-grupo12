@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import Router from 'express'
 import knex from '../database/knex'
 import { z } from 'zod';
 import { compare } from 'bcrypt';
