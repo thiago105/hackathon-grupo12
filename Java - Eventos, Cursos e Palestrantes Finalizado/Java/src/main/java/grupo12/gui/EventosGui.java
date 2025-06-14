@@ -28,7 +28,7 @@ public class EventosGui extends JFrame {
     private JTextField tfId, tfNome, tfDataInicio, tfDataFim, tfHora, tfEndereco, tfFotoUrl;
     private JComboBox<String> cbPalestrantes, cbCursos;
     private Long[] idsPalestrantes = {1L, 2L, 3L}; // IDs mockados
-    private Long[] idsCursos = {101L, 102L, 103L}; // IDs mockados
+    private Long[] idsCursos = {1L, 2L, 3L}; // IDs mockados
 
     private JButton btSalvarNovo, btEditar, btExcluir, btLimpar, btSelecionarFoto;
     private JTable tbEventos;
