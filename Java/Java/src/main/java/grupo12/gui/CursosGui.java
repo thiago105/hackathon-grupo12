@@ -2,6 +2,7 @@ package grupo12.gui;
 
 import grupo12.model.Cursos;
 import grupo12.service.CursosService;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableCellRenderer;

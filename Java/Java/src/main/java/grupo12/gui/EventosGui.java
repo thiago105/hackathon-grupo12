@@ -74,7 +74,7 @@ public class EventosGui extends JFrame {
         btEditar = new JButton("Editar");
         btEditar.addActionListener(this::editar);
 
-        btExcluir = new JButton("Excluir Selecionado");
+        btExcluir = new JButton("Excluir");
         btExcluir.addActionListener(this::excluir);
 
         btLimpar = new JButton("Limpar Campos");
