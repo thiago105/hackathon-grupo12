@@ -1,5 +1,6 @@
 package grupo12.gui;
 
+import grupo12.service.CursosService;
 import grupo12.service.EventosService;
 
 import javax.swing.*;
@@ -27,14 +28,15 @@ public class PrincipalGui extends JFrame {
     private JMenu montarMenuCadastros() {
         var menuCadastros = new JMenu("Cadastros");
         var miEvento = new JMenuItem("Eventos");
+        var miCursos = new JMenuItem("Cursos"); // Texto do item de menu atualizado
         var miPalestrante = new JMenuItem("Palestrantes (futuro)");
-        var miCursos = new JMenuItem("Cursos (futuro)");
 
         menuCadastros.add(miEvento);
-        menuCadastros.add(miPalestrante);
         menuCadastros.add(miCursos);
+        menuCadastros.add(miPalestrante);
 
         miEvento.addActionListener(this::abrirTelaDeEventos);
+        miCursos.addActionListener(this::abrirTelaDeCursos);
 
         return menuCadastros;
     }
@@ -42,6 +44,12 @@ public class PrincipalGui extends JFrame {
     private void abrirTelaDeEventos(ActionEvent actionEvent) {
         var service = new EventosService();
         var gui = new EventosGui(service);
+        gui.setVisible(true);
+    }
+
+    private void abrirTelaDeCursos(ActionEvent actionEvent) {
+        var service = new CursosService();
+        var gui = new CursosGui(service);
         gui.setVisible(true);
     }
 

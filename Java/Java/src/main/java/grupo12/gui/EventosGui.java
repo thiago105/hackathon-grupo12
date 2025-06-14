@@ -20,20 +20,17 @@ public class EventosGui extends JFrame {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private JTextField tfId, tfNome, tfDataInicio, tfDataFim, tfHora, tfEndereco, tfFotoUrl;
-    private JButton btSalvarNovo, btAlterar, btExcluir, btLimpar, btSelecionarFoto;
+    private JButton btSalvarNovo, btEditar, btExcluir, btLimpar, btSelecionarFoto;
     private JTable tbEventos;
-
     private final EventosService service;
     private Eventos eventoSelecionadoParaEdicao;
 
     public EventosGui(EventosService eventosService) {
         this.service = eventosService;
-
         setTitle("Cadastro de Eventos");
         setSize(900, 500);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         getContentPane().add(montarPainelEntrada(), BorderLayout.NORTH);
         getContentPane().add(montarPainelSaida(), BorderLayout.CENTER);
     }
@@ -52,6 +49,7 @@ public class EventosGui extends JFrame {
         tfFotoUrl.setEditable(false);
         btSelecionarFoto = new JButton("Selecionar...");
         btSelecionarFoto.addActionListener(this::selecionarFoto);
+
         painel.add(new JLabel("ID"), utils.montarConstraints(0, 0));
         painel.add(tfId, utils.montarConstraintsParaCampo(1, 0));
         painel.add(new JLabel("Nome"), utils.montarConstraints(0, 1));
@@ -73,8 +71,8 @@ public class EventosGui extends JFrame {
         btSalvarNovo = new JButton("Salvar Novo");
         btSalvarNovo.addActionListener(this::salvar);
 
-        btAlterar = new JButton("Alterar Selecionado");
-        btAlterar.addActionListener(this::alterar);
+        btEditar = new JButton("Editar");
+        btEditar.addActionListener(this::editar);
 
         btExcluir = new JButton("Excluir Selecionado");
         btExcluir.addActionListener(this::excluir);
@@ -84,7 +82,7 @@ public class EventosGui extends JFrame {
 
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelBotoes.add(btSalvarNovo);
-        painelBotoes.add(btAlterar);
+        painelBotoes.add(btEditar);
         painelBotoes.add(btExcluir);
         painelBotoes.add(btLimpar);
         painel.add(painelBotoes, utils.montarConstraints(0, 4, 4));
@@ -145,9 +143,9 @@ public class EventosGui extends JFrame {
         }
     }
 
-    private void alterar(ActionEvent event) {
+    private void editar(ActionEvent event) {
         if (tfId.getText().isEmpty() || this.eventoSelecionadoParaEdicao == null) {
-            JOptionPane.showMessageDialog(this, "Selecione um evento da tabela para poder alterar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione um evento da tabela para poder editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
         Eventos eventoDoFormulario = getEventoDoFormulario();
@@ -161,7 +159,7 @@ public class EventosGui extends JFrame {
                 limparCampos();
                 atualizarTabela();
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao alterar o evento.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erro ao editar o evento.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

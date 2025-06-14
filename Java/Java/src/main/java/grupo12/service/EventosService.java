@@ -2,7 +2,6 @@ package grupo12.service;
 
 import grupo12.dao.EventosDao;
 import grupo12.model.Eventos;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
