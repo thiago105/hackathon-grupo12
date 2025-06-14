@@ -1,5 +1,10 @@
 <?php
-require_once "html/header.php";
+    require_once 'classes/ApiService.php';
+
+    $api = new ApiService();
+    $gets = $api->getUsers();
+
+    require_once "html/header.php";
 ?>
 
 <body>
@@ -9,15 +14,17 @@ require_once "html/header.php";
             <div class="col-12 col-md-8 offset-md-2"> 
                 <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="true">
                     <div class="carousel-inner">
+                        <?php if (empty($gets)): ?>
+                            <p>Não foi possível carregar os eventos</p>
+                        <?php else: ?>  
+                        <?php foreach($gets as $get): ?>      
                         <div class="carousel-item active">
-                            <img src="images/0066b3.png" class="d-block w-100" alt="...">
+                            <img src="<?= htmlspecialchars($get['foto_url'])?>" class="d-block w-100" alt="<?= htmlspecialchars($get['nome'])?>">
                         </div>
-                        <div class="carousel-item">
-                            <img src="images/images.png" class="d-block w-100" alt="...">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="images/40e0d0.png" class="d-block w-100" alt="...">
-                        </div>
+                        <?php 
+                            endforeach;
+                            endif;
+                        ?>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
