@@ -91,7 +91,7 @@ public class EventosGui extends JFrame {
         painel.add(tfNome, utils.montarConstraintsParaCampo(1, 1));
         painel.add(new JLabel("Data Início (dd/MM/aaaa)"), utils.montarConstraints(0, 2));
         painel.add(tfDataInicio, utils.montarConstraintsParaCampo(1, 2));
-        painel.add(new JLabel("Hora (HH:MM)"), utils.montarConstraints(2, 2));
+        painel.add(new JLabel("Data Fim (dd/MM/aaaa)"), utils.montarConstraints(0, 3));
         painel.add(tfDataFim, utils.montarConstraintsParaCampo(1, 3));
         painel.add(new JLabel("Curso"), utils.montarConstraints(2, 0));
         painel.add(cbCursos, utils.montarConstraintsParaCampo(3, 0));
@@ -140,11 +140,12 @@ public class EventosGui extends JFrame {
         var tableModel = new DefaultTableModel();
         tableModel.addColumn("ID");
         tableModel.addColumn("Nome");
+        tableModel.addColumn("Início");
+        tableModel.addColumn("Fim");
         tableModel.addColumn("Curso");
         tableModel.addColumn("Palestrante");
         tableModel.addColumn("Horário");
-        tableModel.addColumn("Início");
-        tableModel.addColumn("Fim");
+        tableModel.addColumn("Endereço");
 
         tbEventos = new JTable(tableModel);
         tbEventos.setDefaultEditor(Object.class, null);
@@ -186,11 +187,12 @@ public class EventosGui extends JFrame {
                 tableModel.addRow(new Object[]{
                         e.getId(),
                         e.getNome(),
+                        e.getDataInicio().format(DATE_FORMATTER),
+                        e.getDataFim().format(DATE_FORMATTER),
                         (e.getCurso() != null) ? e.getCurso().getNome() : "N/A",
                         (e.getPalestrante() != null) ? e.getPalestrante().getNome() : "N/A",
                         e.getHora().format(TIME_FORMATTER),
-                        e.getDataInicio().format(DATE_FORMATTER),
-                        e.getDataFim().format(DATE_FORMATTER)
+                        e.getEndereco()
                 })
         );
     }
