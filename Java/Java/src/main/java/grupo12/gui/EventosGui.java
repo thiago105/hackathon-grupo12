@@ -6,6 +6,7 @@ import grupo12.model.Palestrantes;
 import grupo12.service.CursosService;
 import grupo12.service.EventosService;
 import grupo12.service.PalestrantesService;
+import grupo12.util.FileUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -20,6 +21,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
 public class EventosGui extends JFrame {
 
@@ -271,25 +274,39 @@ public class EventosGui extends JFrame {
     }
 
     private void salvar(ActionEvent event) {
-        if (!tfId.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Para salvar um novo evento, limpe os campos primeiro.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+
         Eventos evento = getEventoDoFormulario();
         if (evento != null) {
+            try {
+                String caminhoImagemOriginal = tfFotoUrl.getText();
+                if (caminhoImagemOriginal != null && !caminhoImagemOriginal.isEmpty()) {
+                    File arquivoImagemOriginal = new File(caminhoImagemOriginal);
+                    String novoCaminho = FileUtils.copiarImagem(arquivoImagemOriginal, "uploads");
+                    evento.setFotoUrl(novoCaminho);
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao copiar a imagem.", "Erro de Arquivo", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+                return;
+            }
             finalizarAcao(service.salvar(evento), "salvo");
         }
     }
 
     private void editar(ActionEvent event) {
-        if (tfId.getText().isEmpty() || this.eventoSelecionadoParaEdicao == null) {
-            JOptionPane.showMessageDialog(this, "Selecione um evento da tabela para poder alterar.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+
         Eventos eventoDoFormulario = getEventoDoFormulario();
         if (eventoDoFormulario != null) {
-            if (eventoSelecionadoParaEdicao.equals(eventoDoFormulario)) {
-                JOptionPane.showMessageDialog(this, "Nenhuma alteração foi feita nos dados do evento.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                String caminhoImagemOriginal = tfFotoUrl.getText();
+                if (caminhoImagemOriginal != null && !caminhoImagemOriginal.equals(eventoSelecionadoParaEdicao.getFotoUrl())) {
+                    File arquivoImagemOriginal = new File(caminhoImagemOriginal);
+                    String novoCaminho = FileUtils.copiarImagem(arquivoImagemOriginal, "uploads");
+                    eventoDoFormulario.setFotoUrl(novoCaminho);
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao copiar a nova imagem.", "Erro de Arquivo", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
                 return;
             }
             finalizarAcao(service.atualizar(eventoDoFormulario), "alterado");
