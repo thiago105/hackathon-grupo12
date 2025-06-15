@@ -1,4 +1,8 @@
-<?php require_once"html/header.php"?>
+<?php 
+session_start();
+
+require_once"html/header.php"
+?>
 <body>
     
 </body>

@@ -1,7 +1,8 @@
 <?php
-require_once 'classes/ApiService.php';
+session_start();
+require_once 'classes/Eventos.php';
 
-$api = new ApiService();
+$api = new Eventos();
 $data = $api->getEventos();
 
 $eventos = $data['eventos'] ?? [];
@@ -19,7 +20,9 @@ require_once "html/header.php";
                 <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="true">
                     <div class="carousel-inner">
                         <?php if (empty($eventos)): ?>
-                            <p class="text-center">Não foi possível carregar os eventos.</p>
+                            <div class="container d-flex justify-content-center align-items-center" id="erro-msg">
+                                <h3>Não há eventos disponíveis.</h3>
+                            </div>
                         <?php else:
                             $contador = 0;
                             shuffle($eventos);

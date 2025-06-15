@@ -1,3 +1,25 @@
+<?php
+session_start();
+require_once 'classes/Usuario.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    $email = $_POST['email'];
+    $senha_hash = $_POST['senha'];
+
+    $usuario = new Usuario();
+    $response = $usuario->logar($email, $senha_hash);
+
+    if (isset($response['token'])) {
+        $_SESSION['token'] = $response['token'];
+        $_SESSION['usuario'] = $response['usuario'];
+
+        header("Location: ./index.php");
+        exit;
+    }else {
+        $errors[] = $response['message'] ?? '';
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -20,6 +42,14 @@
 
     <div class="container col-4">
 
+            <?php if (!empty($errors)): ?>
+        <ul>
+            <?php foreach ($errors as $erro): ?>
+                <li style="color: red;"><?= $erro ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
         <div id="logo" class="d-flex justify-content-center align-items-center mt-5 mb-3">
             <img src="images/logoUnialfa.png" alt="logo da Unialfa" width="412" height="150">
         </div>
@@ -29,19 +59,19 @@
                 <div class="mb-3">
                     <label for="email" class="form-label">E-mail:</label>
                     <input type="email" class="form-control border-dark" id="email" name="email"
-                        aria-describedby="emailHelp" required>
+                        aria-describedby="emailHelp" value="<?= $_POST['email'] ?? ''?>" required>
                     <div id="emailHelp" class="form-text">Nunca passe o email para ninguém</div>
                 </div>
                 <div class="mb-3">
                     <label for="senha" class="form-label">Senha:</label>
-                    <input type="password" class="form-control border-dark" id="senha" name="senha" required>
+                    <input type="password" class="form-control border-dark" id="senha" name="senha" value="<?= $_POST['senha'] ?? '' ?>" required>
                 </div>
                 <pre class="erro-login"> </pre>
                 <div class="cointainer-btn">
-                    <button type="submit" class="btn" id="btnLgn">Logar</button>
+                    <button type="submit" name="submit" class="btn" id="btnLgn">Logar</button>
                 </div>
                 <div class="cointainer-btn mt-3">
-                    <p><a href="#">Esqueceu a senha?</a> | <a href="cadastrar.php">Criar conta.</a></p>
+                    <p>Não tem uma conta? | <a href="cadastrar.php">Criar conta.</a></p>
                 </div>
             </div>
         </form>

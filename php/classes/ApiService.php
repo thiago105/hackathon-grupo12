@@ -1,35 +1,38 @@
 <?php
 
-class ApiService
-{
+class ApiServices {
     protected string $baseUrl;
 
-    public function __construct()
-    {
-        $this->baseUrl = 'http://localhost:3001/';
+    public function __construct() {
+        $this->baseUrl = 'http://localhost:3001';
     }
 
-    public function getEventos()
-    {
-        $url = $this->baseUrl . 'eventos';
+protected function request(string $endpoint, string $method = 'GET', array $data = []) {
+    $url = $this->baseUrl . $endpoint;
 
-        $curl = curl_init($url);
-        curl_setopt_array($curl, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 10,
-            CURLOPT_HTTPHEADER => [
-                'Accept: application/json',
-                'User-Agent: eventos-api'
-            ]
-        ]);
+    $curl = curl_init($url);
+    $options = [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_HTTPHEADER => ['Accept: application/json']
+    ];
 
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        if (!$response){
-            return[];
-        }
-
-        return json_decode($response, true);
+    if ($method === 'POST') {
+        $options[CURLOPT_POST] = true;
+        $options[CURLOPT_POSTFIELDS] = json_encode($data);
+        $options[CURLOPT_HTTPHEADER][] = 'Content-Type: application/json';
     }
+
+    curl_setopt_array($curl, $options);
+    $response = curl_exec($curl);
+    $error = curl_error($curl);
+    curl_close($curl);
+
+    if (!$response) {
+        return ['erro' => 'Erro na requisição: ' . $error];
+    }
+
+    return json_decode($response, true);
+}
+
 }

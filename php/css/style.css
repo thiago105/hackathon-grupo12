@@ -59,7 +59,12 @@ footer #whats span a, footer #git p a{
     object-fit: cover; /* Faz a imagem cobrir o espaço sem distorcer, cortando o excesso */
     width: 100%;
 }
-
+#erro-msg{
+    height: 500px;
+    width: 100%;
+    background-color: #87CEEB;
+    border-radius: 16px;
+}
 /* login.php */
 .cointainer-btn{
     display: flex;
@@ -79,5 +84,6 @@ footer #whats span a, footer #git p a{
 }
 .cointainer-btn p a{
     text-decoration: none;
-    color: black;
+    color: #0066b3;
+    font-weight: bold;
 }

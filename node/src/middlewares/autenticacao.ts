@@ -1,7 +1,7 @@
 import {
   Request,
   Response,
-  NextFunction//sem essa buxa aqui a requisição fica presa aqui
+  NextFunction
 } from 'express'
 import {
   verify
@@ -10,7 +10,7 @@ import {
 function autenticacao(
   req: Request,
   res: Response,
-  next: NextFunction 
+  next: NextFunction
 ) {
   const authHeader = req.headers.authorization
 
@@ -21,7 +21,7 @@ function autenticacao(
 
   // "Bearer lfjebwpuviberugivpbervuberpg.lkjvbrqeçerg"
   const [, token] = authHeader.split(" ");
-  // essa virgula ignora o primeiro elemento que no caso é o bearer
+
   try {
     const dadosToken =
       verify(token, 'NAOPASSARNGM_lhfvqwkufvyk')
