@@ -70,11 +70,11 @@ public class PrincipalGui extends JFrame {
         menuConfig.add(miSair);
 
         miSair.addActionListener(this::sairDaAplicacao);
-        miSobre.addActionListener(this::exibirSobre);
+        miSobre.addActionListener(this::abrirTelaSobre);
         return menuConfig;
     }
 
-    private void exibirSobre(ActionEvent actionEvent) {
+    private void abrirTelaSobre(ActionEvent actionEvent) {
         JOptionPane.showMessageDialog(this,
                 "Sistema de Gestão de Eventos UniALFA\n\n" +
                         "Desenvolvido por:\n\n" +
