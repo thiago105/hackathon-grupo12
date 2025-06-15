@@ -11,6 +11,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
+import java.text.ParseException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
@@ -24,7 +26,8 @@ public class EventosGui extends JFrame {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    private JTextField tfId, tfNome, tfDataInicio, tfDataFim, tfHora, tfEndereco, tfFotoUrl;
+    private JTextField tfId, tfNome, tfEndereco, tfFotoUrl;
+    private JFormattedTextField tfDataInicio, tfDataFim, tfHora;
     private JComboBox<Cursos> cbCursos;
     private JComboBox<Palestrantes> cbPalestrantes;
     private JButton btSalvarNovo, btEditar, btExcluir, btLimpar, btSelecionarFoto;
@@ -51,9 +54,9 @@ public class EventosGui extends JFrame {
         tfId = new JTextField(20);
         tfId.setEditable(false);
         tfNome = new JTextField(20);
-        tfDataInicio = new JTextField(20);
-        tfDataFim = new JTextField(20);
-        tfHora = new JTextField(20);
+        tfDataInicio = new JFormattedTextField(createFormatter("##/##/####"));
+        tfDataFim = new JFormattedTextField(createFormatter("##/##/####"));
+        tfHora = new JFormattedTextField(createFormatter("##:##"));
         tfEndereco = new JTextField(20);
         tfFotoUrl = new JTextField(20);
         tfFotoUrl.setEditable(false);
@@ -88,7 +91,7 @@ public class EventosGui extends JFrame {
         painel.add(tfNome, utils.montarConstraintsParaCampo(1, 1));
         painel.add(new JLabel("Data Início (dd/MM/aaaa)"), utils.montarConstraints(0, 2));
         painel.add(tfDataInicio, utils.montarConstraintsParaCampo(1, 2));
-        painel.add(new JLabel("Data Fim (dd/MM/aaaa)"), utils.montarConstraints(0, 3));
+        painel.add(new JLabel("Hora (HH:MM)"), utils.montarConstraints(2, 2));
         painel.add(tfDataFim, utils.montarConstraintsParaCampo(1, 3));
         painel.add(new JLabel("Curso"), utils.montarConstraints(2, 0));
         painel.add(cbCursos, utils.montarConstraintsParaCampo(3, 0));
@@ -120,6 +123,17 @@ public class EventosGui extends JFrame {
         painelBotoes.add(btLimpar);
         painel.add(painelBotoes, utils.montarConstraints(0, 4, 4));
         return painel;
+    }
+
+    private MaskFormatter createFormatter(String mask) {
+        MaskFormatter formatter = null;
+        try {
+            formatter = new MaskFormatter(mask);
+            formatter.setPlaceholderCharacter('_');
+        } catch (ParseException e) {
+            System.err.println("Erro na criação da máscara de formatação: " + e.getMessage());
+        }
+        return formatter;
     }
 
     private JScrollPane montarPainelSaida() {
