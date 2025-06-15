@@ -7,6 +7,8 @@ import grupo12.model.Palestrantes;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,6 @@ public class EventosDao extends Dao implements DaoInterface {
         try {
             var evento = (Eventos) entity;
             var sql = "INSERT INTO eventos (nome, data_inicio, data_fim, hora, endereco, foto_url, curso_id, palestrante_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, evento.getNome());
             ps.setDate(2, java.sql.Date.valueOf(evento.getDataInicio()));
@@ -25,19 +26,10 @@ public class EventosDao extends Dao implements DaoInterface {
             ps.setTime(4, java.sql.Time.valueOf(evento.getHora()));
             ps.setString(5, evento.getEndereco());
             ps.setString(6, evento.getFotoUrl());
-
-            if (evento.getCurso() != null && evento.getCurso().getId() != null) {
-                ps.setLong(7, evento.getCurso().getId());
-            } else {
-                ps.setNull(7, Types.INTEGER);
-            }
-
-            if (evento.getPalestrante() != null && evento.getPalestrante().getId() != null) {
-                ps.setLong(8, evento.getPalestrante().getId());
-            } else {
-                ps.setNull(8, Types.INTEGER);
-            }
-
+            if (evento.getCurso() != null && evento.getCurso().getId() != null) ps.setLong(7, evento.getCurso().getId());
+            else ps.setNull(7, Types.INTEGER);
+            if (evento.getPalestrante() != null && evento.getPalestrante().getId() != null) ps.setLong(8, evento.getPalestrante().getId());
+            else ps.setNull(8, Types.INTEGER);
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -52,7 +44,6 @@ public class EventosDao extends Dao implements DaoInterface {
         try {
             var evento = (Eventos) entity;
             var sql = "UPDATE eventos SET nome = ?, data_inicio = ?, data_fim = ?, hora = ?, endereco = ?, foto_url = ?, curso_id = ?, palestrante_id = ? WHERE id = ?";
-
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, evento.getNome());
             ps.setDate(2, java.sql.Date.valueOf(evento.getDataInicio()));
@@ -60,19 +51,10 @@ public class EventosDao extends Dao implements DaoInterface {
             ps.setTime(4, java.sql.Time.valueOf(evento.getHora()));
             ps.setString(5, evento.getEndereco());
             ps.setString(6, evento.getFotoUrl());
-
-            if (evento.getCurso() != null && evento.getCurso().getId() != null) {
-                ps.setLong(7, evento.getCurso().getId());
-            } else {
-                ps.setNull(7, Types.INTEGER);
-            }
-
-            if (evento.getPalestrante() != null && evento.getPalestrante().getId() != null) {
-                ps.setLong(8, evento.getPalestrante().getId());
-            } else {
-                ps.setNull(8, Types.INTEGER);
-            }
-
+            if (evento.getCurso() != null && evento.getCurso().getId() != null) ps.setLong(7, evento.getCurso().getId());
+            else ps.setNull(7, Types.INTEGER);
+            if (evento.getPalestrante() != null && evento.getPalestrante().getId() != null) ps.setLong(8, evento.getPalestrante().getId());
+            else ps.setNull(8, Types.INTEGER);
             ps.setLong(9, evento.getId());
             ps.executeUpdate();
             return true;
@@ -82,19 +64,52 @@ public class EventosDao extends Dao implements DaoInterface {
         }
     }
 
+    @Override
+    public Boolean delete(Long pk) {
+        try {
+            var deleteSql = "DELETE FROM eventos WHERE id = ?";
+            var ps = getConnection().prepareStatement(deleteSql);
+            ps.setLong(1, pk);
+            ps.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Erro ao DELETAR evento: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean existeConflitoDeHorario(LocalDate data, LocalTime hora, Long idExcluido) {
+        String sql = "SELECT COUNT(*) FROM eventos WHERE data_inicio = ? AND hora = ?";
+        if (idExcluido != null) {
+            sql += " AND id != ?";
+        }
+        try (var ps = getConnection().prepareStatement(sql)) {
+            ps.setDate(1, java.sql.Date.valueOf(data));
+            ps.setTime(2, java.sql.Time.valueOf(hora));
+            if (idExcluido != null) {
+                ps.setLong(3, idExcluido);
+            }
+            var rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private Eventos buildEventoFromResultSet(ResultSet rs) throws SQLException {
         Cursos curso = null;
         long cursoId = rs.getLong("curso_id");
         if (!rs.wasNull()) {
             curso = new Cursos(cursoId, rs.getString("curso_nome"));
         }
-
         Palestrantes palestrante = null;
         long palestranteId = rs.getLong("palestrante_id");
         if (!rs.wasNull()) {
             palestrante = new Palestrantes(palestranteId, rs.getString("palestrante_nome"), null, null);
         }
-
         return new Eventos(
                 rs.getLong("id"),
                 rs.getString("nome"),
@@ -144,19 +159,5 @@ public class EventosDao extends Dao implements DaoInterface {
             System.out.println("Erro ao buscar eventos: " + e.getMessage());
         }
         return listaDeEventos;
-    }
-
-    @Override
-    public Boolean delete(Long pk) {
-        try {
-            var deleteSql = "DELETE FROM eventos WHERE id = ?";
-            var ps = getConnection().prepareStatement(deleteSql);
-            ps.setLong(1, pk);
-            ps.executeUpdate();
-            return true;
-        } catch (Exception e) {
-            System.out.println("Erro ao DELETAR evento: " + e.getMessage());
-            return false;
-        }
     }
 }

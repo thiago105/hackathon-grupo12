@@ -22,12 +22,20 @@ public class EventosService {
             System.err.println("Erro: A data de fim não pode ser anterior à data de início.");
             return false;
         }
+        if (dao.existeConflitoDeHorario(evento.getDataInicio(), evento.getHora(), null)) {
+            System.err.println("Erro: Já existe um evento cadastrado para esta data e horário.");
+            return false;
+        }
         return this.dao.insert(evento);
     }
 
     public Boolean atualizar(Eventos evento) {
         if (evento.getId() == null || evento.getId() <= 0) {
             System.err.println("Erro: ID inválido para atualização.");
+            return false;
+        }
+        if (dao.existeConflitoDeHorario(evento.getDataInicio(), evento.getHora(), evento.getId())) {
+            System.err.println("Erro: Já existe um evento cadastrado para esta data e horário.");
             return false;
         }
         return this.dao.update(evento);
