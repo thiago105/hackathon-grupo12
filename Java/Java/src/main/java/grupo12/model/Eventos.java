@@ -9,7 +9,6 @@ public class Eventos {
     private Long id;
     private String nome;
     private LocalDate dataInicio;
-    private LocalDate dataFim;
     private LocalTime hora;
     private String endereco;
     private String fotoUrl;
@@ -23,7 +22,6 @@ public class Eventos {
         this.id = id;
         this.nome = nome;
         this.dataInicio = dataInicio;
-        this.dataFim = dataFim;
         this.hora = hora;
         this.endereco = endereco;
         this.fotoUrl = fotoUrl;
@@ -53,14 +51,6 @@ public class Eventos {
 
     public void setDataInicio(LocalDate dataInicio) {
         this.dataInicio = dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
     }
 
     public LocalTime getHora() {
@@ -106,11 +96,11 @@ public class Eventos {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Eventos eventos = (Eventos) o;
-        return Objects.equals(id, eventos.id) && Objects.equals(nome, eventos.nome) && Objects.equals(dataInicio, eventos.dataInicio) && Objects.equals(dataFim, eventos.dataFim) && Objects.equals(hora, eventos.hora) && Objects.equals(endereco, eventos.endereco) && Objects.equals(fotoUrl, eventos.fotoUrl) && Objects.equals(curso, eventos.curso) && Objects.equals(palestrante, eventos.palestrante);
+        return Objects.equals(id, eventos.id) && Objects.equals(nome, eventos.nome) && Objects.equals(dataInicio, eventos.dataInicio) && Objects.equals(hora, eventos.hora) && Objects.equals(endereco, eventos.endereco) && Objects.equals(fotoUrl, eventos.fotoUrl) && Objects.equals(curso, eventos.curso) && Objects.equals(palestrante, eventos.palestrante);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, dataInicio, dataFim, hora, endereco, fotoUrl, curso, palestrante);
+        return Objects.hash(id, nome, dataInicio, hora, endereco, fotoUrl, curso, palestrante);
     }
 }

@@ -18,10 +18,6 @@ public class EventosService {
             System.err.println("Erro: O nome do evento é obrigatório.");
             return false;
         }
-        if (evento.getDataFim().isBefore(evento.getDataInicio())) {
-            System.err.println("Erro: A data de fim não pode ser anterior à data de início.");
-            return false;
-        }
         if (dao.existeConflitoDeHorario(evento.getDataInicio(), evento.getHora(), null)) {
             System.err.println("Erro: Já existe um evento cadastrado para esta data e horário.");
             return false;

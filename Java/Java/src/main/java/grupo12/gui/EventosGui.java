@@ -30,7 +30,7 @@ public class EventosGui extends JFrame {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private JTextField tfId, tfNome, tfEndereco, tfFotoUrl;
-    private JFormattedTextField tfDataInicio, tfDataFim, tfHora;
+    private JFormattedTextField tfDataInicio, tfHora;
     private JComboBox<Cursos> cbCursos;
     private JComboBox<Palestrantes> cbPalestrantes;
     private JButton btSalvarNovo, btEditar, btExcluir, btLimpar, btSelecionarFoto;
@@ -58,7 +58,6 @@ public class EventosGui extends JFrame {
         tfId.setEditable(false);
         tfNome = new JTextField(20);
         tfDataInicio = new JFormattedTextField(createFormatter("##/##/####"));
-        tfDataFim = new JFormattedTextField(createFormatter("##/##/####"));
         tfHora = new JFormattedTextField(createFormatter("##:##"));
         tfEndereco = new JTextField(20);
         tfFotoUrl = new JTextField(20);
@@ -94,8 +93,6 @@ public class EventosGui extends JFrame {
         painel.add(tfNome, utils.montarConstraintsParaCampo(1, 1));
         painel.add(new JLabel("Data Início (dd/MM/aaaa)"), utils.montarConstraints(0, 2));
         painel.add(tfDataInicio, utils.montarConstraintsParaCampo(1, 2));
-        painel.add(new JLabel("Data Fim (dd/MM/aaaa)"), utils.montarConstraints(0, 3));
-        painel.add(tfDataFim, utils.montarConstraintsParaCampo(1, 3));
         painel.add(new JLabel("Curso"), utils.montarConstraints(2, 0));
         painel.add(cbCursos, utils.montarConstraintsParaCampo(3, 0));
         painel.add(new JLabel("Palestrante"), utils.montarConstraints(2, 1));
@@ -144,7 +141,6 @@ public class EventosGui extends JFrame {
         tableModel.addColumn("ID");
         tableModel.addColumn("Nome");
         tableModel.addColumn("Início");
-        tableModel.addColumn("Fim");
         tableModel.addColumn("Curso");
         tableModel.addColumn("Palestrante");
         tableModel.addColumn("Horário");
@@ -194,7 +190,6 @@ public class EventosGui extends JFrame {
                         e.getId(),
                         e.getNome(),
                         e.getDataInicio().format(DATE_FORMATTER),
-                        e.getDataFim().format(DATE_FORMATTER),
                         (e.getCurso() != null) ? e.getCurso().getNome() : "N/A",
                         (e.getPalestrante() != null) ? e.getPalestrante().getNome() : "N/A",
                         e.getHora().format(TIME_FORMATTER),
@@ -213,7 +208,6 @@ public class EventosGui extends JFrame {
                     tfId.setText(eventoSelecionadoParaEdicao.getId().toString());
                     tfNome.setText(eventoSelecionadoParaEdicao.getNome());
                     tfDataInicio.setText(eventoSelecionadoParaEdicao.getDataInicio().format(DATE_FORMATTER));
-                    tfDataFim.setText(eventoSelecionadoParaEdicao.getDataFim().format(DATE_FORMATTER));
                     tfHora.setText(eventoSelecionadoParaEdicao.getHora().format(TIME_FORMATTER));
                     tfEndereco.setText(eventoSelecionadoParaEdicao.getEndereco());
                     tfFotoUrl.setText(eventoSelecionadoParaEdicao.getFotoUrl());
@@ -228,7 +222,6 @@ public class EventosGui extends JFrame {
         tfId.setText(null);
         tfNome.setText(null);
         tfDataInicio.setText(null);
-        tfDataFim.setText(null);
         tfHora.setText(null);
         tfEndereco.setText(null);
         tfFotoUrl.setText(null);
@@ -250,7 +243,6 @@ public class EventosGui extends JFrame {
             evento.setEndereco(tfEndereco.getText());
             evento.setFotoUrl(tfFotoUrl.getText());
             evento.setDataInicio(LocalDate.parse(tfDataInicio.getText(), DATE_FORMATTER));
-            evento.setDataFim(LocalDate.parse(tfDataFim.getText(), DATE_FORMATTER));
             evento.setHora(LocalTime.parse(tfHora.getText(), TIME_FORMATTER));
             evento.setCurso((Cursos) cbCursos.getSelectedItem());
             evento.setPalestrante((Palestrantes) cbPalestrantes.getSelectedItem());

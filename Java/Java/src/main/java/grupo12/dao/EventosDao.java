@@ -22,14 +22,13 @@ public class EventosDao extends Dao implements DaoInterface {
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, evento.getNome());
             ps.setDate(2, java.sql.Date.valueOf(evento.getDataInicio()));
-            ps.setDate(3, java.sql.Date.valueOf(evento.getDataFim()));
-            ps.setTime(4, java.sql.Time.valueOf(evento.getHora()));
-            ps.setString(5, evento.getEndereco());
-            ps.setString(6, evento.getFotoUrl());
-            if (evento.getCurso() != null && evento.getCurso().getId() != null) ps.setLong(7, evento.getCurso().getId());
+            ps.setTime(3, java.sql.Time.valueOf(evento.getHora()));
+            ps.setString(4, evento.getEndereco());
+            ps.setString(5, evento.getFotoUrl());
+            if (evento.getCurso() != null && evento.getCurso().getId() != null) ps.setLong(6, evento.getCurso().getId());
+            else ps.setNull(6, Types.INTEGER);
+            if (evento.getPalestrante() != null && evento.getPalestrante().getId() != null) ps.setLong(7, evento.getPalestrante().getId());
             else ps.setNull(7, Types.INTEGER);
-            if (evento.getPalestrante() != null && evento.getPalestrante().getId() != null) ps.setLong(8, evento.getPalestrante().getId());
-            else ps.setNull(8, Types.INTEGER);
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -47,15 +46,14 @@ public class EventosDao extends Dao implements DaoInterface {
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, evento.getNome());
             ps.setDate(2, java.sql.Date.valueOf(evento.getDataInicio()));
-            ps.setDate(3, java.sql.Date.valueOf(evento.getDataFim()));
-            ps.setTime(4, java.sql.Time.valueOf(evento.getHora()));
-            ps.setString(5, evento.getEndereco());
-            ps.setString(6, evento.getFotoUrl());
-            if (evento.getCurso() != null && evento.getCurso().getId() != null) ps.setLong(7, evento.getCurso().getId());
-            else ps.setNull(7, Types.INTEGER);
+            ps.setTime(3, java.sql.Time.valueOf(evento.getHora()));
+            ps.setString(4, evento.getEndereco());
+            ps.setString(5, evento.getFotoUrl());
+            if (evento.getCurso() != null && evento.getCurso().getId() != null) ps.setLong(6, evento.getCurso().getId());
+            else ps.setNull(6, Types.INTEGER);
             if (evento.getPalestrante() != null && evento.getPalestrante().getId() != null) ps.setLong(8, evento.getPalestrante().getId());
-            else ps.setNull(8, Types.INTEGER);
-            ps.setLong(9, evento.getId());
+            else ps.setNull(7, Types.INTEGER);
+            ps.setLong(8, evento.getId());
             ps.executeUpdate();
             return true;
         } catch (Exception e) {
