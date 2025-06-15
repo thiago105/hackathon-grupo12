@@ -3,52 +3,47 @@ require_once "html/header.php";
 ?>
 
 <body>
-    <div class="container mb-5">
-        <h1>Sobre a Faculdade ALFA Umuarama - UniALFA</h1>
+    <div class="container my-5">
+        <h1 class="mb-4 text-center">Sobre a Faculdade ALFA Umuarama - UniALFA</h1>
+        <p class="lead text-center">Comprometida com a excelência no ensino superior, formando profissionais preparados para os desafios do mercado.</p>
 
-        <h4>História da Faculdade ALFA Umuarama - UniALFA</h4>
-
-        <div class="row mb-3">
-            <div class="col-6"><img src="images/alfa.jpg" alt="Foto externa da IES"></div>
-            <div class="col-6">
-                <p>A Faculdade ALFA Umuarama - UniALFA, sustentada pela experiência de seus mantenedores, já atuantes na prestação de serviços educacionais há mais de vinte e cinco anos, tem como um de seus objetivos dar continuidade ao ensino com qualidade e contribuir com a formação de profissionais para o mercado de trabalho.
-                <p>
-
-                <p>Sempre atenta às mudanças e às necessidades de novas tecnologias e exigências de especialistas visa promover grandes possibilidades de ingresso no mercado empresarial.</p>
-
-                <p>A Faculdade ALFA Umuarama - UniALFA conta com uma equipe de professores qualificados, com experiência no ensino superior e no mercado de trabalho garantindo ao aluno o conhecimento necessário, responsabilidade e infra-estrutura adequada para alcançar o que há de melhor em sua área.</p>
-
+        <section class="mb-5">
+            <h2>História</h2>
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <img src="images/alfa.jpg" alt="Foto externa da IES" class="img-fluid rounded shadow-sm">
+                </div>
+                <div class="col-md-6">
+                    <p>A Faculdade ALFA Umuarama - UniALFA, com mais de 25 anos de tradição no setor educacional, tem como missão oferecer ensino de qualidade, preparando profissionais para o mercado de trabalho.</p>
+                    <p>Atenta às transformações do mundo moderno, a instituição aposta em tecnologia, inovação e formação especializada como pilares do sucesso acadêmico e profissional.</p>
+                    <p>Contamos com um corpo docente qualificado, infraestrutura adequada e um ambiente de ensino que estimula o desenvolvimento intelectual e humano dos nossos alunos.</p>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <p>A Faculdade ALFA Umuarama - UniALFA, sustentada pela experiência de seus mantenedores, já atuantes na prestação de serviços educacionais há mais de vinte e cinco anos, tem como um de seus objetivos dar continuidade ao ensino com qualidade e contribuir com a formação de profissionais para o mercado de trabalho.
-        <p>
+        <section class="mb-5">
+            <h2>Objetivos</h2>
+            <ul>
+                <li>Aliar conhecimento teórico e prático, promovendo uma formação completa.</li>
+                <li>Desenvolver competências humanas e profissionais com foco na cidadania empresarial.</li>
+                <li>Incentivar o aprendizado contínuo e a atualização constante de conhecimentos.</li>
+                <li>Ampliar o impacto social por meio da integração com a comunidade.</li>
+                <li>Promover um ambiente favorável ao crescimento pessoal e profissional dos alunos.</li>
+            </ul>
+        </section>
 
-        <p>Sempre atenta às mudanças e às necessidades de novas tecnologias e exigências de especialistas visa promover grandes possibilidades de ingresso no mercado empresarial.</p>
+        <section class="mb-5">
+            <h2>Missão</h2>
+            <p>Constituir-se como um centro de excelência em ensino superior, promovendo uma educação ética, cidadã e transformadora, que forme profissionais capacitados para contribuir com o desenvolvimento sustentável da sociedade.</p>
+        </section>
 
-        <p>A Faculdade ALFA Umuarama - UniALFA conta com uma equipe de professores qualificados, com experiência no ensino superior e no mercado de trabalho garantindo ao aluno o conhecimento necessário, responsabilidade e infra-estrutura adequada para alcançar o que há de melhor em sua área.</p>
-
-        <h5>Objetivos</h5>
-
-        <ul>
-            <li>Aliar informação com formação: garantir que os alunos tenham tanto o embasamento científico, fundamentação teórica, quanto o técnico, aplicabilidade na prática.</li>
-            <li>Formular programas que incorporem a identificação das competências críticas empresariais e humanas e reflitam o compromisso com a cidadania empresarial.</li>
-            <li>Introduzir modelos comportamentais voltados para o aprendizado permanente, de forma a proporcionar a contínua atualização dos conhecimentos. Oferecer cursos de acordo com o que o mercado pede, sendo isto identificado através de pesquisas.</li>
-            <li>Estender à comunidade as atividades acadêmicas, visando a elevação do nível sócio-econômico-cultural.</li>
-            <li>Promover o ambiente interno de desenvolvimento de relações interpessoais, propiciando o crescimento integrado do ser humano e o pleno exercício de suas habilidades e potencialidades.</li>
-
-        </ul>
-
-        <h5>Missão</h5>
-
-        <p>Constituir-se em centro de excelência no campo do ensino superior, construindo uma educação comprometida com a ética, a cidadania e o conhecimento, resultando na formação de profissionais aptos a contribuírem no desenvolvimento da sociedade.</p>
-
-        <h5>Finalidades</h5>
-
-        <p>Fundamentada na sua filosofia, a Faculdade ALFA Umuarama - UniALFA tem por finalidade a solidificação das diretrizes curriculares emanadas do Ministério da Educação cumprindo os princípios didático-pedagógicos para os seus cursos. Essas diretrizes solidificarão a excelência das práticas acadêmicas a serem desenvolvidas no decorrer das graduações da Faculdade.</p>
-
-    </div >
+        <section>
+            <h2>Finalidades</h2>
+            <p>A Faculdade ALFA Umuarama - UniALFA fundamenta-se nas diretrizes curriculares do Ministério da Educação, garantindo qualidade acadêmica e excelência na formação de seus alunos ao longo de suas graduações.</p>
+        </section>
+    </div>
 </body>
+
 <?php
 require_once "html/footer.php";
 ?>
