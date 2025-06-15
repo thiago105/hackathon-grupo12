@@ -68,18 +68,19 @@ public class PalestrantesDao extends Dao implements DaoInterface {
 
     @Override
     public Object select(Long pk) {
+        Palestrantes palestrante = null;
         try {
             var sql = "SELECT * FROM palestrantes WHERE id = ?";
             var ps = getConnection().prepareStatement(sql);
             ps.setLong(1, pk);
             var rs = ps.executeQuery();
             if (rs.next()) {
-                return buildFromResult(rs);
+                palestrante = buildFromResult(rs);
             }
         } catch (Exception e) {
             System.out.println("Erro ao buscar palestrante por ID: " + e.getMessage());
         }
-        return null;
+        return palestrante != null ? palestrante : new Palestrantes();
     }
 
     @Override

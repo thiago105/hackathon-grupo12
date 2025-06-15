@@ -64,13 +64,18 @@ public class CursosGui extends JFrame {
     private JScrollPane montarPainelSaida() {
         tbCursos = new JTable();
         tbCursos.setDefaultEditor(Object.class, null);
+        tbCursos.getTableHeader().setReorderingAllowed(false);
         tbCursos.getSelectionModel().addListSelectionListener(this::selecionarLinha);
         tbCursos.setModel(montarTableModel());
+
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         for (int i = 0; i < tbCursos.getColumnCount(); i++) {
             tbCursos.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
+
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tbCursos.getTableHeader().getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         return new JScrollPane(tbCursos);
     }
 

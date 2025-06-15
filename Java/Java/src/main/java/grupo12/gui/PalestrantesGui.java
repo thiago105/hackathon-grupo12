@@ -80,13 +80,24 @@ public class PalestrantesGui extends JFrame {
     }
 
     private JScrollPane montarPainelSaida() {
-        tbPalestrantes = new JTable(new DefaultTableModel(new Object[]{"ID", "Nome", "Mini Currículo"}, 0));
+        var tableModel = new DefaultTableModel();
+        tableModel.addColumn("ID");
+        tableModel.addColumn("Nome");
+        tableModel.addColumn("Mini Currículo");
+
+        tbPalestrantes = new JTable(tableModel);
         tbPalestrantes.setDefaultEditor(Object.class, null);
+        tbPalestrantes.getTableHeader().setReorderingAllowed(false); // Impede que o usuário arraste as colunas
         tbPalestrantes.getSelectionModel().addListSelectionListener(this::selecionarLinha);
-        var centerRenderer = new DefaultTableCellRenderer();
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        tbPalestrantes.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-        tbPalestrantes.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+        for (int i = 0; i < tbPalestrantes.getColumnCount(); i++) {
+            tbPalestrantes.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tbPalestrantes.getTableHeader().getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         return new JScrollPane(tbPalestrantes);
     }
 

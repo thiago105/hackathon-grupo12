@@ -160,6 +160,9 @@ public class EventosGui extends JFrame {
         for (int i = 0; i < tbEventos.getColumnCount(); i++) {
             tbEventos.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
+
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) tbEventos.getTableHeader().getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         return new JScrollPane(tbEventos);
     }
 
