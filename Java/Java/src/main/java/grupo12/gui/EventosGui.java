@@ -274,7 +274,10 @@ public class EventosGui extends JFrame {
     }
 
     private void salvar(ActionEvent event) {
-
+        if (!tfId.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Limpe os campos para salvar um novo palestrante.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         Eventos evento = getEventoDoFormulario();
         if (evento != null) {
             try {
@@ -294,7 +297,10 @@ public class EventosGui extends JFrame {
     }
 
     private void editar(ActionEvent event) {
-
+        if (tfId.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Selecione um evento para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         Eventos eventoDoFormulario = getEventoDoFormulario();
         if (eventoDoFormulario != null) {
             try {

@@ -1,21 +1,27 @@
 package grupo12.gui;
 
+import grupo12.model.Eventos;
 import grupo12.model.Palestrantes;
 import grupo12.service.PalestrantesService;
+import grupo12.util.FileUtils;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
 
 public class PalestrantesGui extends JFrame {
 
     private JTextField tfId, tfNome, tfFotoUrl;
     private JTextField tfMiniCurriculo;
-    private JButton btSalvarNovo, btAlterar, btExcluir, btLimpar, btSelecionarFoto;
+    private JButton btSalvarNovo, btEditar, btExcluir, btLimpar, btSelecionarFoto;
     private JTable tbPalestrantes;
     private final PalestrantesService service;
+    private Palestrantes palestranteSelecionadoParaEdicao;
 
     public PalestrantesGui(PalestrantesService palestranteService) {
         this.service = palestranteService;
@@ -53,19 +59,19 @@ public class PalestrantesGui extends JFrame {
         painel.add(painelFoto, utils.montarConstraintsParaCampo(3, 1));
 
         btSalvarNovo = new JButton("Salvar Novo");
-        btAlterar = new JButton("Alterar Selecionado");
-        btExcluir = new JButton("Excluir Selecionado");
+        btEditar = new JButton("Editar");
+        btExcluir = new JButton("Excluir");
         btLimpar = new JButton("Limpar Campos");
 
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelBotoes.add(btSalvarNovo);
-        painelBotoes.add(btAlterar);
+        painelBotoes.add(btEditar);
         painelBotoes.add(btExcluir);
         painelBotoes.add(btLimpar);
         painel.add(painelBotoes, utils.montarConstraints(0, 2, 4));
 
         btSalvarNovo.addActionListener(this::salvar);
-        btAlterar.addActionListener(this::alterar);
+        btEditar.addActionListener(this::editar);
         btExcluir.addActionListener(this::excluir);
         btLimpar.addActionListener(e -> limparCampos());
         btSelecionarFoto.addActionListener(this::selecionarFoto);
@@ -90,15 +96,32 @@ public class PalestrantesGui extends JFrame {
         service.listarTodos().forEach(p -> tableModel.addRow(new Object[]{p.getId(), p.getNome(), p.getMiniCurriculo()}));
     }
 
+    private void selecionarFoto(ActionEvent event) {
+        JFileChooser seletorDeArquivo = new JFileChooser();
+        seletorDeArquivo.setDialogTitle("Selecione uma imagem para o evento");
+        seletorDeArquivo.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                "Arquivos de Imagem", "jpg", "jpeg", "png", "gif"));
+        int resultado = seletorDeArquivo.showOpenDialog(this);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            java.io.File arquivoSelecionado = seletorDeArquivo.getSelectedFile();
+            tfFotoUrl.setText(arquivoSelecionado.getAbsolutePath());
+        }
+    }
+
     private void limparCampos() {
         tfId.setText("");
         tfNome.setText("");
         tfMiniCurriculo.setText("");
         tfFotoUrl.setText("");
         tbPalestrantes.clearSelection();
+        this.palestranteSelecionadoParaEdicao = null;
     }
 
     private Palestrantes getPalestranteDoFormulario() {
+        if(tfNome.getText().trim().isEmpty()){
+            JOptionPane.showMessageDialog(this, "O campo Nome é obrigatório", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
         var p = new Palestrantes();
         p.setId(tfId.getText().isEmpty() ? null : Long.valueOf(tfId.getText()));
         p.setNome(tfNome.getText());
@@ -107,41 +130,60 @@ public class PalestrantesGui extends JFrame {
         return p;
     }
 
-    private void salvar(ActionEvent e) {
+    private void finalizarAcao(boolean sucesso, String operacao) {
+        String mensagem = sucesso ? "Palestrante " + operacao + " com sucesso!" : "Erro ao " + operacao.toLowerCase() + " o palestrante.";
+        String titulo = sucesso ? "Sucesso" : "Erro";
+        int tipoMsg = sucesso ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE;
+        JOptionPane.showMessageDialog(this, mensagem, titulo, tipoMsg);
+        if (sucesso) {
+            limparCampos();
+            atualizarTabela();
+        }
+    }
+
+    private void salvar(ActionEvent event) {
         if (!tfId.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Limpe os campos para salvar um novo palestrante.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        var palestrante = getPalestranteDoFormulario();
-        if(palestrante.getNome().trim().isEmpty()){
-            JOptionPane.showMessageDialog(this, "O campo Nome é obrigatório", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (service.salvar(palestrante)) {
-            JOptionPane.showMessageDialog(this, "Salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            limparCampos();
-            atualizarTabela();
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar.", "Erro", JOptionPane.ERROR_MESSAGE);
+        Palestrantes palestrante = getPalestranteDoFormulario();
+        if (palestrante != null) {
+            try {
+                String caminhoImagemOriginal = tfFotoUrl.getText();
+                if (caminhoImagemOriginal != null && !caminhoImagemOriginal.isEmpty()) {
+                    File arquivoImagemOriginal = new File(caminhoImagemOriginal);
+                    String novoCaminho = FileUtils.copiarImagem(arquivoImagemOriginal, "uploads");
+                    palestrante.setFotoUrl(novoCaminho);
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao copiar a imagem.", "Erro de Arquivo", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+                return;
+            }
+            finalizarAcao(service.salvar(palestrante), "salvo");
         }
     }
 
-    private void alterar(ActionEvent e) {
+    private void editar(ActionEvent e) {
         if (tfId.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Selecione um palestrante para alterar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione um palestrante para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        var palestrante = getPalestranteDoFormulario();
-        if(palestrante.getNome().trim().isEmpty()){
-            JOptionPane.showMessageDialog(this, "O campo Nome é obrigatório", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (service.atualizar(palestrante)) {
-            JOptionPane.showMessageDialog(this, "Alterado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            limparCampos();
-            atualizarTabela();
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao alterar.", "Erro", JOptionPane.ERROR_MESSAGE);
+        Palestrantes palestranteDoFormulario = getPalestranteDoFormulario();
+        if (palestranteDoFormulario != null) {
+            try {
+                String caminhoFotoOriginal = tfFotoUrl.getText();
+                if (caminhoFotoOriginal != null && !caminhoFotoOriginal.equals(palestranteSelecionadoParaEdicao.getFotoUrl())) {
+                    File arquivoImagemOriginal = new File(caminhoFotoOriginal);
+                    String novoCaminho = FileUtils.copiarImagem(arquivoImagemOriginal, "uploads");
+                    palestranteDoFormulario.setFotoUrl(novoCaminho);
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao copiar a nova imagem.", "Erro de Arquivo", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+                return;
+            }
+            finalizarAcao(service.atualizar(palestranteDoFormulario), "alterado");
         }
     }
 
@@ -152,9 +194,7 @@ public class PalestrantesGui extends JFrame {
         }
         int resp = JOptionPane.showConfirmDialog(this, "Deseja realmente excluir?", "Confirmação", JOptionPane.YES_NO_OPTION);
         if (resp == JOptionPane.YES_OPTION) {
-            service.excluir(Long.valueOf(tfId.getText()));
-            limparCampos();
-            atualizarTabela();
+            finalizarAcao(service.excluir(Long.valueOf(tfId.getText())), "excluído");
         }
     }
 
@@ -169,18 +209,6 @@ public class PalestrantesGui extends JFrame {
                 tfMiniCurriculo.setText(p.getMiniCurriculo());
                 tfFotoUrl.setText(p.getFotoUrl());
             }
-        }
-    }
-
-    private void selecionarFoto(ActionEvent event) {
-        JFileChooser seletorDeArquivo = new JFileChooser();
-        seletorDeArquivo.setDialogTitle("Selecione uma imagem para o evento");
-        seletorDeArquivo.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
-                "Arquivos de Imagem", "jpg", "jpeg", "png", "gif"));
-        int resultado = seletorDeArquivo.showOpenDialog(this);
-        if (resultado == JFileChooser.APPROVE_OPTION) {
-            java.io.File arquivoSelecionado = seletorDeArquivo.getSelectedFile();
-            tfFotoUrl.setText(arquivoSelecionado.getAbsolutePath());
         }
     }
 }
