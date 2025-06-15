@@ -2,7 +2,7 @@
 
 class ApiService
 {
-    private string $baseUrl;
+    protected string $baseUrl;
 
     public function __construct()
     {

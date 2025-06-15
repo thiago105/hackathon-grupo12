@@ -1,5 +1,5 @@
 import Router from 'express'
-import knex from '../database/knex'
+import knex from '../db/knex'
 import { z } from 'zod';
 import { compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
