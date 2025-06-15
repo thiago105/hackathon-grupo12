@@ -6,12 +6,12 @@ class ApiService
 
     public function __construct()
     {
-        $this->baseUrl = 'http://localhost:3306/';
+        $this->baseUrl = 'http://localhost:3001/';
     }
 
-    public function getUsers()
+    public function getEventos()
     {
-        $url = $this->baseUrl . '';
+        $url = $this->baseUrl . 'eventos';
 
         $curl = curl_init($url);
         curl_setopt_array($curl, [
@@ -19,7 +19,7 @@ class ApiService
             CURLOPT_TIMEOUT => 10,
             CURLOPT_HTTPHEADER => [
                 'Accept: application/json',
-                'User-Agent": eventos-api'
+                'User-Agent: eventos-api'
             ]
         ]);
 

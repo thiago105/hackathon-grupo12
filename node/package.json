@@ -5,7 +5,7 @@
   "scripts": {
     "migrate:rollback": "knex migrate:rollback",
     "migrate:up": "knex migrate:latest",
-    "migrate:make": "knex migrate:make criarInscricoes",
+    "migrate:make": "knex migrate:make criarTabela",
     "dev": "nodemon ./src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
