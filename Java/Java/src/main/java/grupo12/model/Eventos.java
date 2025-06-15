@@ -2,6 +2,7 @@ package grupo12.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Eventos {
 
@@ -12,13 +13,13 @@ public class Eventos {
     private LocalTime hora;
     private String endereco;
     private String fotoUrl;
-    private int curso_id;
-    private int palestrante_id;
+    private Cursos curso;
+    private Palestrantes palestrante;
 
     public Eventos() {
     }
 
-    public Eventos(Long id, String nome, LocalDate dataInicio, LocalDate dataFim, LocalTime hora, String endereco, String fotoUrl) {
+    public Eventos(Long id, String nome, LocalDate dataInicio, LocalDate dataFim, LocalTime hora, String endereco, String fotoUrl,  Cursos curso, Palestrantes palestrante) {
         this.id = id;
         this.nome = nome;
         this.dataInicio = dataInicio;
@@ -26,6 +27,8 @@ public class Eventos {
         this.hora = hora;
         this.endereco = endereco;
         this.fotoUrl = fotoUrl;
+        this.curso = curso;
+        this.palestrante = palestrante;
     }
 
     public Long getId() {
@@ -84,18 +87,30 @@ public class Eventos {
         this.fotoUrl = fotoUrl;
     }
 
-    public int getCurso_id() {
-        return curso_id;
+    public Cursos getCurso() {
+        return curso;
     }
-    public void setCurso_id(int curso_id) {
-        this.curso_id = curso_id;
-    }
-
-    public int getPalestrante_id() {
-        return palestrante_id;
-    }
-    public void setPalestrante_id(int palestrante_id) {
-        this.palestrante_id = palestrante_id;
+    public void setCurso(Cursos curso) {
+        this.curso = curso;
     }
 
+    public Palestrantes getPalestrante() {
+        return palestrante;
+    }
+    public void setPalestrante(Palestrantes palestrante) {
+        this.palestrante = palestrante;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Eventos eventos = (Eventos) o;
+        return Objects.equals(id, eventos.id) && Objects.equals(nome, eventos.nome) && Objects.equals(dataInicio, eventos.dataInicio) && Objects.equals(dataFim, eventos.dataFim) && Objects.equals(hora, eventos.hora) && Objects.equals(endereco, eventos.endereco) && Objects.equals(fotoUrl, eventos.fotoUrl) && Objects.equals(curso, eventos.curso) && Objects.equals(palestrante, eventos.palestrante);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nome, dataInicio, dataFim, hora, endereco, fotoUrl, curso, palestrante);
+    }
 }

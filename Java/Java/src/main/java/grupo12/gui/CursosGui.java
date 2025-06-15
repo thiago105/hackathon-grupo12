@@ -44,13 +44,10 @@ public class CursosGui extends JFrame {
 
         btSalvarNovo = new JButton("Salvar Novo");
         btSalvarNovo.addActionListener(this::salvar);
-
         btEditar = new JButton("Editar");
         btEditar.addActionListener(this::editar);
-
         btExcluir = new JButton("Excluir");
         btExcluir.addActionListener(this::excluir);
-
         btLimpar = new JButton("Limpar Campos");
         btLimpar.addActionListener(e -> limparCampos());
 

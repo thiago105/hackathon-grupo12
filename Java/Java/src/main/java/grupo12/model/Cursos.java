@@ -1,5 +1,7 @@
 package grupo12.model;
 
+import java.util.Objects;
+
 public class Cursos {
 
     private Long id;
@@ -27,5 +29,18 @@ public class Cursos {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cursos cursos = (Cursos) o;
+        return Objects.equals(id, cursos.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

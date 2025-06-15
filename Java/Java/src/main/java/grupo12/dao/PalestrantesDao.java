@@ -16,7 +16,7 @@ public class PalestrantesDao extends Dao implements DaoInterface {
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, palestrante.getNome());
             ps.setString(2, palestrante.getMiniCurriculo());
-            ps.setString(4, palestrante.getFotoUrl());
+            ps.setString(3, palestrante.getFotoUrl());
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -32,15 +32,24 @@ public class PalestrantesDao extends Dao implements DaoInterface {
             var sql = "UPDATE palestrantes SET nome = ?, mini_curriculo = ?, foto_url = ? WHERE id = ?";
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, palestrante.getNome());
-            ps.setString(3, palestrante.getMiniCurriculo());
-            ps.setString(4, palestrante.getFotoUrl());
-            ps.setLong(5, palestrante.getId());
+            ps.setString(2, palestrante.getMiniCurriculo());
+            ps.setString(3, palestrante.getFotoUrl());
+            ps.setLong(4, palestrante.getId());
             ps.executeUpdate();
             return true;
         } catch (Exception e) {
             System.out.println("Erro ao ATUALIZAR palestrante: " + e.getMessage());
             return false;
         }
+    }
+
+    private Palestrantes buildFromResult(ResultSet rs) throws SQLException {
+        return new Palestrantes(
+                rs.getLong("id"),
+                rs.getString("nome"),
+                rs.getString("mini_curriculo"),
+                rs.getString("foto_url")
+        );
     }
 
     @Override
@@ -55,15 +64,6 @@ public class PalestrantesDao extends Dao implements DaoInterface {
             System.out.println("Erro ao DELETAR palestrante: " + e.getMessage());
             return false;
         }
-    }
-
-    private Palestrantes buildFromResult(ResultSet rs) throws SQLException {
-        return new Palestrantes(
-                rs.getLong("id"),
-                rs.getString("nome"),
-                rs.getString("mini_curriculo"),
-                rs.getString("foto_url")
-        );
     }
 
     @Override

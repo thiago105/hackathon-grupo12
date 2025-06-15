@@ -38,9 +38,6 @@ public class CursosService {
     }
 
     public Cursos buscarPorId(Long id) {
-        if (id == null || id <= 0) {
-            return null;
-        }
         Cursos curso = (Cursos) this.dao.select(id);
         if (curso != null && curso.getId() != null) {
             return curso;

@@ -2,7 +2,6 @@ package grupo12.gui;
 
 import grupo12.model.Palestrantes;
 import grupo12.service.PalestrantesService;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -24,16 +23,15 @@ public class PalestrantesGui extends JFrame {
         setSize(800, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
         getContentPane().add(montarPainelEntrada(), BorderLayout.NORTH);
         getContentPane().add(montarPainelSaida(), BorderLayout.CENTER);
-
         atualizarTabela();
     }
 
     private JPanel montarPainelEntrada() {
         var painel = new JPanel(new GridBagLayout());
         var utils = new GuiUtils();
+
         tfId = new JTextField(20);
         tfId.setEditable(false);
         tfNome = new JTextField(20);
@@ -41,45 +39,48 @@ public class PalestrantesGui extends JFrame {
         tfFotoUrl = new JTextField(20);
         tfFotoUrl.setEditable(false);
         btSelecionarFoto = new JButton("Selecionar...");
+
         painel.add(new JLabel("ID"), utils.montarConstraints(0, 0));
         painel.add(tfId, utils.montarConstraintsParaCampo(1, 0));
         painel.add(new JLabel("Nome"), utils.montarConstraints(0, 1));
         painel.add(tfNome, utils.montarConstraintsParaCampo(1, 1));
-        painel.add(new JLabel("Mini Currículo"), utils.montarConstraints(0, 2));
-        painel.add(tfMiniCurriculo, utils.montarConstraintsParaCampo(1, 2));
+        painel.add(new JLabel("Mini Currículo"), utils.montarConstraints(2, 0));
+        painel.add(new JScrollPane(tfMiniCurriculo), utils.montarConstraintsParaCampo(3, 0));
         painel.add(new JLabel("URL da Foto"), utils.montarConstraints(2, 1));
         JPanel painelFoto = new JPanel(new BorderLayout(5,0));
         painelFoto.add(tfFotoUrl, BorderLayout.CENTER);
         painelFoto.add(btSelecionarFoto, BorderLayout.EAST);
         painel.add(painelFoto, utils.montarConstraintsParaCampo(3, 1));
+
         btSalvarNovo = new JButton("Salvar Novo");
         btAlterar = new JButton("Alterar Selecionado");
         btExcluir = new JButton("Excluir Selecionado");
         btLimpar = new JButton("Limpar Campos");
+
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelBotoes.add(btSalvarNovo);
         painelBotoes.add(btAlterar);
         painelBotoes.add(btExcluir);
         painelBotoes.add(btLimpar);
-        painel.add(painelBotoes, utils.montarConstraints(0, 3, 4));
+        painel.add(painelBotoes, utils.montarConstraints(0, 2, 4));
+
         btSalvarNovo.addActionListener(this::salvar);
         btAlterar.addActionListener(this::alterar);
         btExcluir.addActionListener(this::excluir);
         btLimpar.addActionListener(e -> limparCampos());
         btSelecionarFoto.addActionListener(this::selecionarFoto);
+
         return painel;
     }
 
     private JScrollPane montarPainelSaida() {
-        tbPalestrantes = new JTable();
-        tbPalestrantes.setModel(new DefaultTableModel(new Object[]{"ID", "Nome", "Mini Curriculo"}, 0));
+        tbPalestrantes = new JTable(new DefaultTableModel(new Object[]{"ID", "Nome", "Mini Currículo"}, 0));
         tbPalestrantes.setDefaultEditor(Object.class, null);
         tbPalestrantes.getSelectionModel().addListSelectionListener(this::selecionarLinha);
         var centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        for (int i = 0; i < tbPalestrantes.getColumnCount(); i++) {
-            tbPalestrantes.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
+        tbPalestrantes.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        tbPalestrantes.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
         return new JScrollPane(tbPalestrantes);
     }
 
@@ -112,6 +113,10 @@ public class PalestrantesGui extends JFrame {
             return;
         }
         var palestrante = getPalestranteDoFormulario();
+        if(palestrante.getNome().trim().isEmpty()){
+            JOptionPane.showMessageDialog(this, "O campo Nome é obrigatório", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         if (service.salvar(palestrante)) {
             JOptionPane.showMessageDialog(this, "Salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             limparCampos();
@@ -127,6 +132,10 @@ public class PalestrantesGui extends JFrame {
             return;
         }
         var palestrante = getPalestranteDoFormulario();
+        if(palestrante.getNome().trim().isEmpty()){
+            JOptionPane.showMessageDialog(this, "O campo Nome é obrigatório", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         if (service.atualizar(palestrante)) {
             JOptionPane.showMessageDialog(this, "Alterado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             limparCampos();

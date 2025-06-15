@@ -1,5 +1,6 @@
 package grupo12.model;
 
+import java.util.Objects;
 public class Palestrantes {
 
     private Long id;
@@ -25,4 +26,17 @@ public class Palestrantes {
     public void setMiniCurriculo(String miniCurriculo) { this.miniCurriculo = miniCurriculo; }
     public String getFotoUrl() { return fotoUrl; }
     public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Palestrantes that = (Palestrantes) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
