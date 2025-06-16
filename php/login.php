@@ -2,6 +2,8 @@
 session_start();
 require_once 'classes/Usuario.php';
 
+$errors = [];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $email = $_POST['email'];
     $senha_hash = $_POST['senha'];
