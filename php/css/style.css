@@ -87,3 +87,14 @@ footer #whats span a, footer #git p a{
     color: #0066b3;
     font-weight: bold;
 }
+form ul{
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: baseline;
+    padding: 0;
+}
+#msgErro{
+    color: red;
+    list-style: none;
+}

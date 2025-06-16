@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
         header("Location: ./index.php");
         exit;
-    }else {
+    } else {
         $errors[] = $response['message'] ?? '';
     }
 }
@@ -42,14 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
     <div class="container col-4">
 
-            <?php if (!empty($errors)): ?>
-        <ul>
-            <?php foreach ($errors as $erro): ?>
-                <li style="color: red;"><?= $erro ?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-
         <div id="logo" class="d-flex justify-content-center align-items-center mt-5 mb-3">
             <img src="images/logoUnialfa.png" alt="logo da Unialfa" width="412" height="150">
         </div>
@@ -59,14 +51,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 <div class="mb-3">
                     <label for="email" class="form-label">E-mail:</label>
                     <input type="email" class="form-control border-dark" id="email" name="email"
-                        aria-describedby="emailHelp" value="<?= $_POST['email'] ?? ''?>" required>
+                        aria-describedby="emailHelp" value="<?= $_POST['email'] ?? '' ?>" required>
                     <div id="emailHelp" class="form-text">Nunca passe o email para ninguém</div>
                 </div>
                 <div class="mb-3">
                     <label for="senha" class="form-label">Senha:</label>
-                    <input type="password" class="form-control border-dark" id="senha" name="senha" value="<?= $_POST['senha'] ?? '' ?>" required>
+                    <input type="password" class="form-control border-dark" id="senha" name="senha"
+                        value="<?= $_POST['senha'] ?? '' ?>" required>
                 </div>
-                <pre class="erro-login"> </pre>
+                    
+                    
+        <ul>
+            <li id="msgErro">
+                <?php if (!empty($errors)): ?>      
+            <?php foreach ($errors as $erro): ?>
+                <?= $erro ?>
+            <?php endforeach; ?>
+            <?php endif; ?>
+            </li>    
+        </ul>
+    
+               
                 <div class="cointainer-btn">
                     <button type="submit" name="submit" class="btn" id="btnLgn">Logar</button>
                 </div>

@@ -12,10 +12,10 @@ class Usuario extends ApiServices
         ]);
     }
 
-    public function cadastrar($foto_url, $nome, $email, $senha_hash, $curso_id)
+    public function cadastrar($nome, $email, $senha_hash, $curso_id)
     {
         return $this->request('/usuarios', 'POST', [
-            '../images/ft_perfil.webp' => $foto_url,
+            'foto_url' => 'images/ft_perfil.webp',
             'nome' => $nome,
             'email' => $email,
             'senha_hash' => $senha_hash,

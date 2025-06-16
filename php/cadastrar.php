@@ -1,5 +1,33 @@
-<?php 
-    
+<?php
+
+require_once 'classes/Usuario.php';
+require_once 'classes/Curso.php';
+
+$erros = [];
+
+$apiCursos = new Curso();
+$data = $apiCursos->getCursos();
+$cursos = $data['cursos'] ?? [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+
+    $nome = $_POST['nome'];
+    $email = $_POST['email'];
+    $senha_hash = $_POST['senha'];
+    $curso_id = $_POST['curso_id'];
+
+    $usuario = new Usuario();
+    $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
+
+    if (isset($response['errors'])) {
+        $erros = $response['errors'];
+    }
+
+    if (empty($erros)) {
+        header("location: ./login.php");
+        exit;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -43,12 +71,18 @@
                     <input type="password" class="form-control border-dark" id="senha" name="senha" required>
                 </div>
                 <div class="mb-3">
-                    <label for="curso" class="form-label">Selecione um Curso:</label>
-                    <select class="form-select border-dark" id="curso" name="curso">
-                        <option selected>Clique para abrir as opções</option>
-                        <option value="1">Curso 1</option>
-                        <option value="2">Curso 2</option>
-                        <option value="3">Curso 3</option>
+                    <label for="curso_id" class="form-label">Selecione um Curso:</label>
+                    <select class="form-select border-dark" id="curso_id" name="curso_id" required>
+                        <?php if (empty($cursos)) { ?>
+                            <option value="" selected disabled>Sem cursos cadastrados</option>
+                        <?php } else { ?>
+                            <option value="" selected disabled>Clique para selecionar um curso</option>
+                            <?php foreach ($cursos as $curso) { ?>
+                                <option value="<?= htmlspecialchars($curso['id']) ?>">
+                                    <?= htmlspecialchars($curso['nome']) ?>
+                                </option>
+                            <?php } ?>
+                        <?php } ?>
                     </select>
                 </div>
                 <div class="cointainer-btn">
@@ -59,4 +93,5 @@
     </div>
 
 </body>
+
 </html>
