@@ -3,6 +3,7 @@
 require_once 'classes/Usuario.php';
 require_once 'classes/Curso.php';
 
+// 1. Inicia o array de erros vazio
 $erros = [];
 
 $apiCursos = new Curso();
@@ -19,14 +20,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $usuario = new Usuario();
     $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
 
-    if (isset($response['errors'])) {
-        $erros = $response['errors'];
+    // 2. LÓGICA CORRIGIDA: Verifica se a resposta da API contém a chave 'errors'
+    if (isset($response['errors']) && is_array($response['errors'])) {
+        // Se houver erros, percorre o array de erros recebido
+        foreach ($response['errors'] as $erro_obj) {
+            // E adiciona cada mensagem de erro ao nosso array local '$erros'
+            if (isset($erro_obj['message'])) {
+                $erros[] = $erro_obj['message'];
+            }
+        }
     }
 
+    // 3. DECISÃO FINAL: Apenas se o array '$erros' continuar vazio, redireciona.
+    // Isso significa que a API não retornou a chave 'errors', então o cadastro foi um sucesso.
     if (empty($erros)) {
         header("location: ./login.php");
         exit;
     }
+    // Se o array '$erros' tiver conteúdo, o script continua e exibe os erros no HTML.
 }
 ?>
 <!DOCTYPE html>
@@ -59,16 +70,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             <div>
                 <div class="mb-3">
                     <label for="nome" class="form-label">Nome:</label>
-                    <input type="text" class="form-control border-dark" id="nome" name="nome" required>
+                    <input type="text" value="<?= $_POST['nome'] ?? '' ?>" class="form-control border-dark" id="nome"
+                        name="nome" required>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">E-mail:</label>
-                    <input type="email" class="form-control border-dark" id="email" name="email"
-                        aria-describedby="emailHelp" required>
+                    <input type="email" value="<?= $_POST['email'] ?? '' ?>" class="form-control border-dark" id="email"
+                        name="email" aria-describedby="emailHelp" required>
                 </div>
                 <div class="mb-3">
                     <label for="senha" class="form-label">Senha:</label>
-                    <input type="password" class="form-control border-dark" id="senha" name="senha" required>
+                    <input type="password" value="<?= $_POST['senha'] ?? '' ?>" class="form-control border-dark"
+                        id="senha" name="senha" required>
                 </div>
                 <div class="mb-3">
                     <label for="curso_id" class="form-label">Selecione um Curso:</label>
@@ -85,8 +98,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         <?php } ?>
                     </select>
                 </div>
+                <ul>
+                    <li id="msgErro" class="text-danger"> <?php if (!empty($erros)): ?>
+                            <?php foreach ($erros as $erro): ?>
+                                <?= htmlspecialchars($erro) ?><br>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </li>
+                </ul>
                 <div class="cointainer-btn">
-                    <button type="submit" class="btn" id="btnLgn">Casdastrar</button>
+                    <button type="submit" name="submit" class="btn" id="btnLgn">Casdastrar</button>
                 </div>
             </div>
         </form>

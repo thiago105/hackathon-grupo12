@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
 
     if (inscricaoExistente) { res.status(400).json({ message: 'Você já se inscreveu nesse evento' }) }
 
-    await knex('usuarios')
+    await knex('inscricoes')
       .insert({
         usuario_id: body.usuario_id,
         evento_id: body.evento_id
