@@ -50,7 +50,7 @@ public class PalestrantesGui extends JFrame {
         painel.add(tfId, utils.montarConstraintsParaCampo(1, 0));
         painel.add(new JLabel("Nome"), utils.montarConstraints(0, 1));
         painel.add(tfNome, utils.montarConstraintsParaCampo(1, 1));
-        painel.add(new JLabel("Tema da Palestra"), utils.montarConstraints(0, 2));
+        painel.add(new JLabel("Tema do Palestrante"), utils.montarConstraints(0, 2));
         painel.add(tfTema, utils.montarConstraintsParaCampo(1, 2));
         painel.add(new JLabel("Mini Currículo"), utils.montarConstraints(2, 0));
         painel.add(new JScrollPane(tfMiniCurriculo), utils.montarConstraintsParaCampo(3, 0));
