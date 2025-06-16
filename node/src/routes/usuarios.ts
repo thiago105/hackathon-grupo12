@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
       .first()
 
     if (existeUsuario) {
-       res.status(400).json({ errors: [{ message: 'E-mail já cadastrado.' }] });
+       res.status(400).json({ errors: [{ message: 'E-mail já cadastrado ' }] });
     }
 
     const senhaHash = await hash(dados.senha_hash, 10);

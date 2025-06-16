@@ -24,7 +24,6 @@ exports.up = async function(knex) {
     table.increments('id').unsigned().primary();
     table.string('nome', 150).notNullable();
     table.date('data_inicio');
-    table.date('data_fim');
     table.time('hora');
     table.string('endereco', 150).notNullable();
     table.string('foto_url', 255);

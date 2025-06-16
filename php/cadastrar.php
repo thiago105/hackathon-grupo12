@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 <ul>
                     <li id="msgErro" class="text-danger"> <?php if (!empty($erros)): ?>
                             <?php foreach ($erros as $erro): ?>
-                                <?= htmlspecialchars($erro) ?><br>
+                                <?= htmlspecialchars($erro) ?> <a href="login.php">Ir para login.</a><br>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </li>
