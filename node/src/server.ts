@@ -10,7 +10,7 @@ app.use(cors())
 
 app.use(express.json())
 
-const PORT = 3306
+const PORT = 3001
 
 app.use(routes)
 
