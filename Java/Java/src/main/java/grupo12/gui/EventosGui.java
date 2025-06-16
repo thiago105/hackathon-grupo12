@@ -135,9 +135,10 @@ public class EventosGui extends JFrame {
         var tableModel = new DefaultTableModel();
         tableModel.addColumn("ID");
         tableModel.addColumn("Nome");
-        tableModel.addColumn("Início"); // Coluna unificada
+        tableModel.addColumn("Início");
         tableModel.addColumn("Curso");
         tableModel.addColumn("Palestrante");
+        tableModel.addColumn("Tema");
         tableModel.addColumn("Endereço");
 
         tbEventos = new JTable(tableModel);
@@ -187,6 +188,7 @@ public class EventosGui extends JFrame {
                     dataHoraInicio,
                     (e.getCurso() != null) ? e.getCurso().getNome() : "N/A",
                     (e.getPalestrante() != null) ? e.getPalestrante().getNome() : "N/A",
+                    (e.getPalestrante() != null) ? e.getPalestrante().getTema() : "N/A",
                     e.getEndereco()
             });
         });

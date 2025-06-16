@@ -51,7 +51,7 @@ public class EventosDao extends Dao implements DaoInterface {
             ps.setString(5, evento.getFotoUrl());
             if (evento.getCurso() != null && evento.getCurso().getId() != null) ps.setLong(6, evento.getCurso().getId());
             else ps.setNull(6, Types.INTEGER);
-            if (evento.getPalestrante() != null && evento.getPalestrante().getId() != null) ps.setLong(8, evento.getPalestrante().getId());
+            if (evento.getPalestrante() != null && evento.getPalestrante().getId() != null) ps.setLong(7, evento.getPalestrante().getId());
             else ps.setNull(7, Types.INTEGER);
             ps.setLong(8, evento.getId());
             ps.executeUpdate();
@@ -106,7 +106,7 @@ public class EventosDao extends Dao implements DaoInterface {
         Palestrantes palestrante = null;
         long palestranteId = rs.getLong("palestrante_id");
         if (!rs.wasNull()) {
-            palestrante = new Palestrantes(palestranteId, rs.getString("palestrante_nome"), null, null, null);
+            palestrante = new Palestrantes(palestranteId, rs.getString("palestrante_nome"), null, rs.getString("palestrante_tema"), null);
         }
         return new Eventos(
                 rs.getLong("id"),
@@ -123,7 +123,7 @@ public class EventosDao extends Dao implements DaoInterface {
     @Override
     public Object select(Long pk) {
         Eventos evento = null;
-        var sql = "SELECT e.*, c.nome as curso_nome, p.nome as palestrante_nome " +
+        var sql = "SELECT e.*, c.nome as curso_nome, p.nome as palestrante_nome, p.tema as palestrante_tema " +
                 "FROM eventos e " +
                 "LEFT JOIN cursos c ON e.curso_id = c.id " +
                 "LEFT JOIN palestrantes p ON e.palestrante_id = p.id " +
@@ -143,7 +143,7 @@ public class EventosDao extends Dao implements DaoInterface {
     @Override
     public List<Object> selectAll() {
         var listaDeEventos = new ArrayList<Object>();
-        var sql = "SELECT e.*, c.nome as curso_nome, p.nome as palestrante_nome " +
+        var sql = "SELECT e.*, c.nome as curso_nome, p.nome as palestrante_nome, p.tema as palestrante_tema " +
                 "FROM eventos e " +
                 "LEFT JOIN cursos c ON e.curso_id = c.id " +
                 "LEFT JOIN palestrantes p ON e.palestrante_id = p.id";

@@ -239,6 +239,7 @@ public class PalestrantesGui extends JFrame {
                 tfId.setText(p.getId().toString());
                 tfNome.setText(p.getNome());
                 tfMiniCurriculo.setText(p.getMiniCurriculo());
+                tfTema.setText(p.getTema());
                 tfFotoUrl.setText(p.getFotoUrl());
             }
         }
