@@ -1,6 +1,5 @@
 package grupo12.gui;
 
-import grupo12.model.Eventos;
 import grupo12.model.Palestrantes;
 import grupo12.service.PalestrantesService;
 import grupo12.util.FileUtils;
@@ -16,7 +15,7 @@ import java.io.IOException;
 
 public class PalestrantesGui extends JFrame {
 
-    private JTextField tfId, tfNome, tfFotoUrl;
+    private JTextField tfId, tfNome, tfFotoUrl, tfTema;
     private JTextField tfMiniCurriculo;
     private JButton btSalvarNovo, btEditar, btExcluir, btLimpar, btSelecionarFoto;
     private JTable tbPalestrantes;
@@ -26,7 +25,7 @@ public class PalestrantesGui extends JFrame {
     public PalestrantesGui(PalestrantesService palestranteService) {
         this.service = palestranteService;
         setTitle("Cadastro de Palestrantes");
-        setSize(800, 600);
+        setSize(800, 450);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         getContentPane().add(montarPainelEntrada(), BorderLayout.NORTH);
@@ -41,6 +40,7 @@ public class PalestrantesGui extends JFrame {
         tfId = new JTextField(20);
         tfId.setEditable(false);
         tfNome = new JTextField(20);
+        tfTema = new JTextField(20);
         tfMiniCurriculo = new JTextField(20);
         tfFotoUrl = new JTextField(20);
         tfFotoUrl.setEditable(false);
@@ -50,13 +50,15 @@ public class PalestrantesGui extends JFrame {
         painel.add(tfId, utils.montarConstraintsParaCampo(1, 0));
         painel.add(new JLabel("Nome"), utils.montarConstraints(0, 1));
         painel.add(tfNome, utils.montarConstraintsParaCampo(1, 1));
+        painel.add(new JLabel("Tema da Palestra"), utils.montarConstraints(0, 2));
+        painel.add(tfTema, utils.montarConstraintsParaCampo(1, 2));
         painel.add(new JLabel("Mini Currículo"), utils.montarConstraints(2, 0));
         painel.add(new JScrollPane(tfMiniCurriculo), utils.montarConstraintsParaCampo(3, 0));
-        painel.add(new JLabel("URL da Foto"), utils.montarConstraints(2, 1));
+        painel.add(new JLabel("URL da Foto"), utils.montarConstraints(2, 2));
         JPanel painelFoto = new JPanel(new BorderLayout(5,0));
         painelFoto.add(tfFotoUrl, BorderLayout.CENTER);
         painelFoto.add(btSelecionarFoto, BorderLayout.EAST);
-        painel.add(painelFoto, utils.montarConstraintsParaCampo(3, 1));
+        painel.add(painelFoto, utils.montarConstraintsParaCampo(3, 2));
 
         btSalvarNovo = new JButton("Salvar Novo");
         btEditar = new JButton("Editar");
@@ -68,7 +70,7 @@ public class PalestrantesGui extends JFrame {
         painelBotoes.add(btEditar);
         painelBotoes.add(btExcluir);
         painelBotoes.add(btLimpar);
-        painel.add(painelBotoes, utils.montarConstraints(0, 2, 4));
+        painel.add(painelBotoes, utils.montarConstraints(0, 3, 4));
 
         btSalvarNovo.addActionListener(this::salvar);
         btEditar.addActionListener(this::editar);
@@ -83,11 +85,12 @@ public class PalestrantesGui extends JFrame {
         var tableModel = new DefaultTableModel();
         tableModel.addColumn("ID");
         tableModel.addColumn("Nome");
+        tableModel.addColumn("Tema");
         tableModel.addColumn("Mini Currículo");
 
         tbPalestrantes = new JTable(tableModel);
         tbPalestrantes.setDefaultEditor(Object.class, null);
-        tbPalestrantes.getTableHeader().setReorderingAllowed(false); // Impede que o usuário arraste as colunas
+        tbPalestrantes.getTableHeader().setReorderingAllowed(false);
         tbPalestrantes.getSelectionModel().addListSelectionListener(this::selecionarLinha);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -104,7 +107,7 @@ public class PalestrantesGui extends JFrame {
     private void atualizarTabela() {
         var tableModel = (DefaultTableModel) tbPalestrantes.getModel();
         tableModel.setRowCount(0);
-        service.listarTodos().forEach(p -> tableModel.addRow(new Object[]{p.getId(), p.getNome(), p.getMiniCurriculo()}));
+        service.listarTodos().forEach(p -> tableModel.addRow(new Object[]{p.getId(), p.getNome(), p.getTema(), p.getMiniCurriculo()}));
     }
 
     private void selecionarFoto(ActionEvent event) {
@@ -123,6 +126,7 @@ public class PalestrantesGui extends JFrame {
         tfId.setText("");
         tfNome.setText("");
         tfMiniCurriculo.setText("");
+        tfTema.setText("");
         tfFotoUrl.setText("");
         tbPalestrantes.clearSelection();
         this.palestranteSelecionadoParaEdicao = null;
@@ -136,6 +140,7 @@ public class PalestrantesGui extends JFrame {
         var p = new Palestrantes();
         p.setId(tfId.getText().isEmpty() ? null : Long.valueOf(tfId.getText()));
         p.setNome(tfNome.getText());
+        p.setTema(tfTema.getText());
         p.setMiniCurriculo(tfMiniCurriculo.getText());
         p.setFotoUrl(tfFotoUrl.getText());
         return p;
@@ -176,15 +181,31 @@ public class PalestrantesGui extends JFrame {
     }
 
     private void editar(ActionEvent e) {
-        if (tfId.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Selecione um palestrante para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        String idText = tfId.getText();
+        if (idText.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Selecione um palestrante na tabela ou informe um ID para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        if (this.palestranteSelecionadoParaEdicao == null) {
+            try {
+                Long id = Long.valueOf(idText);
+                this.palestranteSelecionadoParaEdicao = service.buscarPorId(id);
+                if (this.palestranteSelecionadoParaEdicao == null || this.palestranteSelecionadoParaEdicao.getId() == null) {
+                    JOptionPane.showMessageDialog(this, "O ID informado no formulário não corresponde a um palestrante válido.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                    this.palestranteSelecionadoParaEdicao = null; // Garante que continue nulo
+                    return;
+                }
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(this, "O ID informado no formulário é inválido.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+
         Palestrantes palestranteDoFormulario = getPalestranteDoFormulario();
         if (palestranteDoFormulario != null) {
             try {
                 String caminhoFotoOriginal = tfFotoUrl.getText();
-                if (caminhoFotoOriginal != null && !caminhoFotoOriginal.equals(palestranteSelecionadoParaEdicao.getFotoUrl())) {
+                if (caminhoFotoOriginal != null && !caminhoFotoOriginal.equals(this.palestranteSelecionadoParaEdicao.getFotoUrl())) {
                     File arquivoImagemOriginal = new File(caminhoFotoOriginal);
                     String novoCaminho = FileUtils.copiarImagem(arquivoImagemOriginal, "uploads");
                     palestranteDoFormulario.setFotoUrl(novoCaminho);

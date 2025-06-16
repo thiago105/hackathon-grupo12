@@ -12,11 +12,12 @@ public class PalestrantesDao extends Dao implements DaoInterface {
     public Boolean insert(Object entity) {
         try {
             var palestrante = (Palestrantes) entity;
-            var sql = "INSERT INTO palestrantes (nome, mini_curriculo, foto_url) VALUES (?, ?, ?)";
+            var sql = "INSERT INTO palestrantes (nome, mini_curriculo, tema, foto_url) VALUES (?, ?, ?, ?)";
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, palestrante.getNome());
             ps.setString(2, palestrante.getMiniCurriculo());
-            ps.setString(3, palestrante.getFotoUrl());
+            ps.setString(3, palestrante.getTema());
+            ps.setString(4, palestrante.getFotoUrl());
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -29,12 +30,13 @@ public class PalestrantesDao extends Dao implements DaoInterface {
     public Boolean update(Object entity) {
         try {
             var palestrante = (Palestrantes) entity;
-            var sql = "UPDATE palestrantes SET nome = ?, mini_curriculo = ?, foto_url = ? WHERE id = ?";
+            var sql = "UPDATE palestrantes SET nome = ?, mini_curriculo = ?, tema = ?, foto_url = ? WHERE id = ?";
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, palestrante.getNome());
             ps.setString(2, palestrante.getMiniCurriculo());
-            ps.setString(3, palestrante.getFotoUrl());
-            ps.setLong(4, palestrante.getId());
+            ps.setString(3, palestrante.getTema());
+            ps.setString(4, palestrante.getFotoUrl());
+            ps.setLong(5, palestrante.getId());
             ps.executeUpdate();
             return true;
         } catch (Exception e) {
@@ -48,6 +50,7 @@ public class PalestrantesDao extends Dao implements DaoInterface {
                 rs.getLong("id"),
                 rs.getString("nome"),
                 rs.getString("mini_curriculo"),
+                rs.getString("tema"),
                 rs.getString("foto_url")
         );
     }

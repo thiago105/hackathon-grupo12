@@ -106,7 +106,7 @@ public class EventosDao extends Dao implements DaoInterface {
         Palestrantes palestrante = null;
         long palestranteId = rs.getLong("palestrante_id");
         if (!rs.wasNull()) {
-            palestrante = new Palestrantes(palestranteId, rs.getString("palestrante_nome"), null, null);
+            palestrante = new Palestrantes(palestranteId, rs.getString("palestrante_nome"), null, null, null);
         }
         return new Eventos(
                 rs.getLong("id"),
