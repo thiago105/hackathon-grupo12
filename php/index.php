@@ -26,7 +26,7 @@ require_once "html/header.php";
                             shuffle($eventos);
                             foreach ($eventos as $evento): ?>
                                 <div class="carousel-item <?= $contador === 0 ? 'active' : '' ?>">
-                                    <img src="<?= htmlspecialchars($evento['foto_url']) ?>" class="d-block w-100"
+                                    <img src="../<?= htmlspecialchars($evento['foto_url']) ?>" class="d-block w-100"
                                         alt="<?= htmlspecialchars($evento['nome']) ?>">
                                     <div class="carousel-caption d-none d-md-block">
                                         <h5><?= htmlspecialchars($evento['nome']) ?></h5>
