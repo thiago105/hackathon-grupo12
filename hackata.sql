@@ -33,6 +33,8 @@ CREATE TABLE palestrantes (
 CREATE TABLE eventos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
+    data_inicio DATE,
+    hora TIME,
     endereco VARCHAR(150) NOT NULL,
     foto_url VARCHAR(255),
     curso_id INT,
