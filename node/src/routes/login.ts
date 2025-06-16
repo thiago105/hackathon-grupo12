@@ -27,11 +27,11 @@ router.post("/", async (req, res) => {
       })
       return
     }
-  const senhaCerta = objLogin.senha_hash === user.senha_hash;
-   /* const senhaCerta = await compare(
+  //const senhaCerta = objLogin.senha_hash === user.senha_hash;
+    const senhaCerta = await compare(
       objLogin.senha_hash,
       user.senha_hash
-    )*/
+    )
 
     if (!senhaCerta) {
       res.status(400).json({

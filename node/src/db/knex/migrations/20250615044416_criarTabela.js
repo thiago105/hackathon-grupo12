@@ -6,13 +6,18 @@ exports.up = async function(knex) {
   await knex.schema.createTable('cursos', (table) => {
     table.increments('id').unsigned().primary();
     table.string('nome', 100).notNullable();
+    table.timestamp('created_at').defaultTo(knex.fn.now());
+    table.timestamp('updated_at').defaultTo(knex.fn.now());
   });
 
   await knex.schema.createTable('palestrantes', (table) => {
     table.increments('id').unsigned().primary();
     table.string('nome', 100).notNullable();
     table.text('mini_curriculo');
+    table.string('tema', 250);
     table.string('foto_url', 255);
+    table.timestamp('created_at').defaultTo(knex.fn.now());
+    table.timestamp('updated_at').defaultTo(knex.fn.now());
   });
 
   await knex.schema.createTable('eventos', (table) => {
@@ -25,6 +30,8 @@ exports.up = async function(knex) {
     table.string('foto_url', 255);
     table.integer('curso_id').unsigned().references('id').inTable('cursos');
     table.integer('palestrante_id').unsigned().references('id').inTable('palestrantes');
+    table.timestamp('created_at').defaultTo(knex.fn.now());
+    table.timestamp('updated_at').defaultTo(knex.fn.now());
   });
 
   await knex.schema.createTable('usuarios', (table) => {
@@ -45,6 +52,8 @@ exports.up = async function(knex) {
     table.dateTime('data_inscricao').defaultTo(knex.fn.now());
     table.boolean('aprovado').defaultTo(false);
     table.unique(['usuario_id', 'evento_id']);
+    table.timestamp('created_at').defaultTo(knex.fn.now());
+    table.timestamp('updated_at').defaultTo(knex.fn.now());
   });
 };
 
