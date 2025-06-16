@@ -7,15 +7,12 @@ import { sign } from 'jsonwebtoken'
 const router = Router()
 
 router.post("/", async (req, res) => {
-
   const registerBodySchema = z.object({
     email: z.string().email(),
     senha_hash: z.string(),
   })
 
-  const objLogin = registerBodySchema.parse(
-    req.body
-  )
+  const objLogin = registerBodySchema.parse(req.body)
 
   const user = await knex('usuarios')
     .where({ email: objLogin.email})
