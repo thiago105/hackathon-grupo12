@@ -16,8 +16,7 @@ import javax.swing.text.MaskFormatter;
 import java.text.ParseException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -26,11 +25,10 @@ import java.io.IOException;
 
 public class EventosGui extends JFrame {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private JTextField tfId, tfNome, tfEndereco, tfFotoUrl;
-    private JFormattedTextField tfDataInicio, tfHora;
+    private JFormattedTextField tfDataHoraInicio;
     private JComboBox<Cursos> cbCursos;
     private JComboBox<Palestrantes> cbPalestrantes;
     private JButton btSalvarNovo, btEditar, btExcluir, btLimpar, btSelecionarFoto;
@@ -57,13 +55,12 @@ public class EventosGui extends JFrame {
         tfId = new JTextField(20);
         tfId.setEditable(false);
         tfNome = new JTextField(20);
-        tfDataInicio = new JFormattedTextField(createFormatter("##/##/####"));
-        tfHora = new JFormattedTextField(createFormatter("##:##"));
         tfEndereco = new JTextField(20);
         tfFotoUrl = new JTextField(20);
         tfFotoUrl.setEditable(false);
         btSelecionarFoto = new JButton("Selecionar...");
         btSelecionarFoto.addActionListener(this::selecionarFoto);
+        tfDataHoraInicio = new JFormattedTextField(createFormatter("##/##/#### ##:##"));
 
         cbCursos = new JComboBox<>();
         cbCursos.setRenderer(new DefaultListCellRenderer() {
@@ -91,21 +88,19 @@ public class EventosGui extends JFrame {
         painel.add(tfId, utils.montarConstraintsParaCampo(1, 0));
         painel.add(new JLabel("Nome"), utils.montarConstraints(0, 1));
         painel.add(tfNome, utils.montarConstraintsParaCampo(1, 1));
-        painel.add(new JLabel("Data Início (dd/MM/aaaa)"), utils.montarConstraints(0, 2));
-        painel.add(tfDataInicio, utils.montarConstraintsParaCampo(1, 2));
+        painel.add(new JLabel("Início (dd/MM/yyyy HH:mm)"), utils.montarConstraints(0, 2));
+        painel.add(tfDataHoraInicio, utils.montarConstraintsParaCampo(1, 2), 3);
         painel.add(new JLabel("Curso"), utils.montarConstraints(2, 0));
         painel.add(cbCursos, utils.montarConstraintsParaCampo(3, 0));
         painel.add(new JLabel("Palestrante"), utils.montarConstraints(2, 1));
         painel.add(cbPalestrantes, utils.montarConstraintsParaCampo(3, 1));
-        painel.add(new JLabel("Hora (HH:MM)"), utils.montarConstraints(2, 2));
-        painel.add(tfHora, utils.montarConstraintsParaCampo(3, 2));
-        painel.add(new JLabel("Endereço"), utils.montarConstraints(2, 3));
-        painel.add(tfEndereco, utils.montarConstraintsParaCampo(3, 3));
-        painel.add(new JLabel("URL da Foto"), utils.montarConstraints(2, 4));
+        painel.add(new JLabel("Endereço"), utils.montarConstraints(0, 3));
+        painel.add(tfEndereco, utils.montarConstraintsParaCampo(1, 3), 3);
+        painel.add(new JLabel("URL da Foto"), utils.montarConstraints(0, 4));
         JPanel painelFoto = new JPanel(new BorderLayout(5, 0));
         painelFoto.add(tfFotoUrl, BorderLayout.CENTER);
         painelFoto.add(btSelecionarFoto, BorderLayout.EAST);
-        painel.add(painelFoto, utils.montarConstraintsParaCampo(3, 4));
+        painel.add(painelFoto, utils.montarConstraintsParaCampo(1, 4), 3);
 
         btSalvarNovo = new JButton("Salvar Novo");
         btSalvarNovo.addActionListener(this::salvar);
@@ -121,7 +116,7 @@ public class EventosGui extends JFrame {
         painelBotoes.add(btEditar);
         painelBotoes.add(btExcluir);
         painelBotoes.add(btLimpar);
-        painel.add(painelBotoes, utils.montarConstraints(0, 4, 4));
+        painel.add(painelBotoes, utils.montarConstraints(0, 5, 4));
         return painel;
     }
 
@@ -140,10 +135,9 @@ public class EventosGui extends JFrame {
         var tableModel = new DefaultTableModel();
         tableModel.addColumn("ID");
         tableModel.addColumn("Nome");
-        tableModel.addColumn("Início");
+        tableModel.addColumn("Início"); // Coluna unificada
         tableModel.addColumn("Curso");
         tableModel.addColumn("Palestrante");
-        tableModel.addColumn("Horário");
         tableModel.addColumn("Endereço");
 
         tbEventos = new JTable(tableModel);
@@ -185,17 +179,17 @@ public class EventosGui extends JFrame {
     private void atualizarTabela() {
         DefaultTableModel tableModel = (DefaultTableModel) tbEventos.getModel();
         tableModel.setRowCount(0);
-        service.listarTodos().forEach(e ->
-                tableModel.addRow(new Object[]{
-                        e.getId(),
-                        e.getNome(),
-                        e.getDataInicio().format(DATE_FORMATTER),
-                        (e.getCurso() != null) ? e.getCurso().getNome() : "N/A",
-                        (e.getPalestrante() != null) ? e.getPalestrante().getNome() : "N/A",
-                        e.getHora().format(TIME_FORMATTER),
-                        e.getEndereco()
-                })
-        );
+        service.listarTodos().forEach(e -> {
+            String dataHoraInicio = LocalDateTime.of(e.getDataInicio(), e.getHora()).format(DATETIME_FORMATTER);
+            tableModel.addRow(new Object[]{
+                    e.getId(),
+                    e.getNome(),
+                    dataHoraInicio,
+                    (e.getCurso() != null) ? e.getCurso().getNome() : "N/A",
+                    (e.getPalestrante() != null) ? e.getPalestrante().getNome() : "N/A",
+                    e.getEndereco()
+            });
+        });
     }
 
     private void selecionarLinha(ListSelectionEvent event) {
@@ -207,8 +201,10 @@ public class EventosGui extends JFrame {
                 if (this.eventoSelecionadoParaEdicao != null) {
                     tfId.setText(eventoSelecionadoParaEdicao.getId().toString());
                     tfNome.setText(eventoSelecionadoParaEdicao.getNome());
-                    tfDataInicio.setText(eventoSelecionadoParaEdicao.getDataInicio().format(DATE_FORMATTER));
-                    tfHora.setText(eventoSelecionadoParaEdicao.getHora().format(TIME_FORMATTER));
+
+                    LocalDateTime dataHora = LocalDateTime.of(eventoSelecionadoParaEdicao.getDataInicio(), eventoSelecionadoParaEdicao.getHora());
+                    tfDataHoraInicio.setText(dataHora.format(DATETIME_FORMATTER));
+
                     tfEndereco.setText(eventoSelecionadoParaEdicao.getEndereco());
                     tfFotoUrl.setText(eventoSelecionadoParaEdicao.getFotoUrl());
                     cbCursos.setSelectedItem(eventoSelecionadoParaEdicao.getCurso());
@@ -221,8 +217,7 @@ public class EventosGui extends JFrame {
     private void limparCampos() {
         tfId.setText(null);
         tfNome.setText(null);
-        tfDataInicio.setText(null);
-        tfHora.setText(null);
+        tfDataHoraInicio.setText(null);
         tfEndereco.setText(null);
         tfFotoUrl.setText(null);
         cbCursos.setSelectedItem(null);
@@ -232,8 +227,8 @@ public class EventosGui extends JFrame {
     }
 
     private Eventos getEventoDoFormulario() {
-        if (tfNome.getText().trim().isEmpty() || tfDataInicio.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nome e Data de Início são obrigatórios.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        if (tfNome.getText().trim().isEmpty() || tfDataHoraInicio.getText().trim().replace("_", "").replace("/", "").replace(":", "").trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nome e Data/Hora de Início são obrigatórios.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return null;
         }
         try {
@@ -242,13 +237,14 @@ public class EventosGui extends JFrame {
             evento.setNome(tfNome.getText());
             evento.setEndereco(tfEndereco.getText());
             evento.setFotoUrl(tfFotoUrl.getText());
-            evento.setDataInicio(LocalDate.parse(tfDataInicio.getText(), DATE_FORMATTER));
-            evento.setHora(LocalTime.parse(tfHora.getText(), TIME_FORMATTER));
+            LocalDateTime dataHora = LocalDateTime.parse(tfDataHoraInicio.getText(), DATETIME_FORMATTER);
+            evento.setDataInicio(dataHora.toLocalDate());
+            evento.setHora(dataHora.toLocalTime());
             evento.setCurso((Cursos) cbCursos.getSelectedItem());
             evento.setPalestrante((Palestrantes) cbPalestrantes.getSelectedItem());
             return evento;
         } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "Erro de formato. Verifique a data (dd/MM/aaaa) e a hora (HH:MM).", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro de formato. Verifique a data e a hora (dd/MM/yyyy HH:mm).", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
             return null;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -270,7 +266,7 @@ public class EventosGui extends JFrame {
 
     private void salvar(ActionEvent event) {
         if (!tfId.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Limpe os campos para salvar um novo palestrante.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Limpe os campos para salvar um novo evento.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
         Eventos evento = getEventoDoFormulario();
