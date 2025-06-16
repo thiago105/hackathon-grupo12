@@ -18,7 +18,7 @@ public class EventosDao extends Dao implements DaoInterface {
     public Boolean insert(Object entity) {
         try {
             var evento = (Eventos) entity;
-            var sql = "INSERT INTO eventos (nome, data_inicio, data_fim, hora, endereco, foto_url, curso_id, palestrante_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            var sql = "INSERT INTO eventos (nome, data_inicio, hora, endereco, foto_url, curso_id, palestrante_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, evento.getNome());
             ps.setDate(2, java.sql.Date.valueOf(evento.getDataInicio()));
@@ -42,7 +42,7 @@ public class EventosDao extends Dao implements DaoInterface {
     public Boolean update(Object entity) {
         try {
             var evento = (Eventos) entity;
-            var sql = "UPDATE eventos SET nome = ?, data_inicio = ?, data_fim = ?, hora = ?, endereco = ?, foto_url = ?, curso_id = ?, palestrante_id = ? WHERE id = ?";
+            var sql = "UPDATE eventos SET nome = ?, data_inicio = ?, hora = ?, endereco = ?, foto_url = ?, curso_id = ?, palestrante_id = ? WHERE id = ?";
             var ps = getConnection().prepareStatement(sql);
             ps.setString(1, evento.getNome());
             ps.setDate(2, java.sql.Date.valueOf(evento.getDataInicio()));
@@ -112,7 +112,6 @@ public class EventosDao extends Dao implements DaoInterface {
                 rs.getLong("id"),
                 rs.getString("nome"),
                 rs.getDate("data_inicio").toLocalDate(),
-                rs.getDate("data_fim").toLocalDate(),
                 rs.getTime("hora").toLocalTime(),
                 rs.getString("endereco"),
                 rs.getString("foto_url"),

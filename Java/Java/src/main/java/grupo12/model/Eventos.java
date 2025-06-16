@@ -18,7 +18,7 @@ public class Eventos {
     public Eventos() {
     }
 
-    public Eventos(Long id, String nome, LocalDate dataInicio, LocalDate dataFim, LocalTime hora, String endereco, String fotoUrl,  Cursos curso, Palestrantes palestrante) {
+    public Eventos(Long id, String nome, LocalDate dataInicio, LocalTime hora, String endereco, String fotoUrl,  Cursos curso, Palestrantes palestrante) {
         this.id = id;
         this.nome = nome;
         this.dataInicio = dataInicio;
