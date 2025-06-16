@@ -1,0 +1,5 @@
+node_modules
+.ideia
+php
+node/src/server.ts
+node/knexfile.ts

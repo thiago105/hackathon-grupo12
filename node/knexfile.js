@@ -1,3 +1,4 @@
+/*ROTA localhost THIAGO*/
 const path = require('path')
 
 module.exports = {
@@ -6,8 +7,9 @@ module.exports = {
         connection: {
             host: 'localhost',
             user: 'root',
-            password: '',
-            database: 'hackata'
+            password: 'root',
+            database: 'hackata',
+            port: 3306
         },
         migrations: {
             directory: path.resolve(
