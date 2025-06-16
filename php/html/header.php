@@ -1,3 +1,15 @@
+<?php
+session_start();
+require_once 'classes/Usuario.php';
+
+if (isset($_SESSION['usuario']['id'])) {
+    
+    $idUsuarioLogado = $_SESSION['usuario']['id'];
+
+    $apiUsuario = new Usuario();
+    $dadosUsuario = $apiUsuario->listarUsuario($idUsuarioLogado);
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -28,7 +40,11 @@
                 </ul>
             </nav>
         </div>
-        <div class="col-1 d-flex justify-content-center align-items-center"><a href="login.php"><button type="button" class="btn"
-                id="btnLogin">Login</button></a></div>
-    </div>
+        <div class="col-1 d-flex justify-content-center align-items-center">
+            <?php if(isset($_SESSION['usuario'])):?>
+                <a href="#"><img id="foto_perfil" src="<?= htmlspecialchars($dadosUsuario["foto_url"]) ?>" alt="<?= htmlspecialchars($dadosUsuario["nome"]) ?>"></a>
+            <?php else:?>
+               <a href="login.php"><button type="button" class="btn"id="btnLogin"><i class="bi bi-person"></i>Login</button></a> 
+            <?php endif?>    
+        </div>
 </header>

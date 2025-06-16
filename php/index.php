@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once 'classes/Eventos.php';
 
 $api = new Eventos();
@@ -8,6 +7,7 @@ $data = $api->getEventos();
 $eventos = $data['eventos'] ?? [];
 
 require_once "html/header.php";
+
 ?>
 
 <body>

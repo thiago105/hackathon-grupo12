@@ -42,6 +42,11 @@ header{
     border-radius: 16px;
     transition: 1s;
 }
+#foto_perfil{
+    height: 60px;
+    width: 60px;
+    border-radius: 100%;
+}
 footer{
     background-color: #0066b3;
     color: #FFFFFF;

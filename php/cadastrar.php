@@ -3,7 +3,6 @@
 require_once 'classes/Usuario.php';
 require_once 'classes/Curso.php';
 
-// 1. Inicia o array de erros vazio
 $erros = [];
 
 $apiCursos = new Curso();
@@ -20,24 +19,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $usuario = new Usuario();
     $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
 
-    // 2. LÓGICA CORRIGIDA: Verifica se a resposta da API contém a chave 'errors'
+
     if (isset($response['errors']) && is_array($response['errors'])) {
-        // Se houver erros, percorre o array de erros recebido
+
         foreach ($response['errors'] as $erro_obj) {
-            // E adiciona cada mensagem de erro ao nosso array local '$erros'
+
             if (isset($erro_obj['message'])) {
                 $erros[] = $erro_obj['message'];
             }
         }
     }
 
-    // 3. DECISÃO FINAL: Apenas se o array '$erros' continuar vazio, redireciona.
-    // Isso significa que a API não retornou a chave 'errors', então o cadastro foi um sucesso.
     if (empty($erros)) {
         header("location: ./login.php");
         exit;
     }
-    // Se o array '$erros' tiver conteúdo, o script continua e exibe os erros no HTML.
+
 }
 ?>
 <!DOCTYPE html>
