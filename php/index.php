@@ -29,7 +29,7 @@ require_once "html/header.php";
                                     <img src="../<?= htmlspecialchars($evento['foto_url']) ?>" class="d-block w-100"
                                         alt="<?= htmlspecialchars($evento['nome']) ?>">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5><?= htmlspecialchars($evento['nome']) ?></h5>
+                                        <h5 style="color: black;"><?= htmlspecialchars($evento['nome']) ?></h5>
                                     </div>
                                 </div>
                                 <?php
