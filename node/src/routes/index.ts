@@ -5,7 +5,6 @@ import eventos from './eventos';
 import login from './login';
 import palestrantes from './palestrantes';
 import autenticacao from '../middlewares/autenticacao';
-import { Router } from 'express';
 
 const routes = Router();
 
