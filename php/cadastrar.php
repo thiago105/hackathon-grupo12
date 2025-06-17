@@ -66,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         $erros[] = 'As senhas não conferem. Por favor, tente novamente.';
     }
 
-    if (strlen($senha) < 8) {
-        $erros[] = 'A senha deve ter no mínimo 8 caracteres.';
+    if (strlen($senha) < 6) {
+        $erros[] = 'A senha deve ter no mínimo 6 caracteres.';
     }
     
     // 3. Se não houver erros de validação, prossiga com o cadastro
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
         // Cria o usuário e chama o método de cadastro
         $usuario = new Usuario();
-        $response = $usuario->cadastrar($nome, $email, $senha_hash,  $curso_id);
+        $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
 
         // Verifica a resposta da API (ex: email já cadastrado)
         if (isset($response['errors']) && is_array($response['errors'])) {
