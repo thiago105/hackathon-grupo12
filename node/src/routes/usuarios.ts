@@ -38,12 +38,8 @@ router.post("/", async (req, res) => {
       nome: z.string(),
       email: z.string().email(),
       senha_hash: z.string().min(6, { message: "Senha tem que ter no mínimo 6 dígitos" }),
-      confirmarSenha_hash: z.string().min(6, { message: "Senha tem que ter no mínimo 6 dígitos" }),
       curso_id: z.coerce.number(),
-    }).refine((data) => data.senha_hash === data.confirmarSenha_hash, {
-      message: "As senhas não são iguais",
-      path: ["confirmarSenha_hash"],
-    });
+    })
 
   try {
     const dados = registerBodySchema.parse(req.body);
