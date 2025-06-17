@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 
 public class Dao {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/hackata?useTimezone=true&serverTimezone=UTC";
+    private static final String URL = "jdbc:mysql://localhost:3306/hackata?useTimezone=true&serverTimezone=UTC-3";
     private static final String USER = "root";
     private static final String PASSWORD = "";
 

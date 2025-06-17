@@ -3,6 +3,7 @@ package grupo12.gui;
 import grupo12.service.CursosService;
 import grupo12.service.EventosService;
 import grupo12.service.PalestrantesService;
+import grupo12.service.InscricoesService;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -31,14 +32,17 @@ public class PrincipalGui extends JFrame {
         var miEvento = new JMenuItem("Eventos");
         var miCursos = new JMenuItem("Cursos");
         var miPalestrantes = new JMenuItem("Palestrantes");
+        var miInscricoes = new JMenuItem("Gerenciar Inscrições");
 
         menuCadastros.add(miEvento);
         menuCadastros.add(miCursos);
         menuCadastros.add(miPalestrantes);
+        menuCadastros.add(miInscricoes);
 
         miEvento.addActionListener(this::abrirTelaDeEventos);
         miCursos.addActionListener(this::abrirTelaDeCursos);
         miPalestrantes.addActionListener(this::abrirTelaDePalestrantes);
+        miInscricoes.addActionListener(this::abrirTelaDeInscricoes);
         return menuCadastros;
     }
 
@@ -57,6 +61,12 @@ public class PrincipalGui extends JFrame {
     private void abrirTelaDePalestrantes(ActionEvent actionEvent) {
         var service = new PalestrantesService();
         var gui = new PalestrantesGui(service);
+        gui.setVisible(true);
+    }
+
+    private void abrirTelaDeInscricoes(ActionEvent actionEvent) {
+        var service = new InscricoesService();
+        var gui = new InscricoesGui(service);
         gui.setVisible(true);
     }
 

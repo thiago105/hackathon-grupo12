@@ -203,10 +203,8 @@ public class EventosGui extends JFrame {
                 if (this.eventoSelecionadoParaEdicao != null) {
                     tfId.setText(eventoSelecionadoParaEdicao.getId().toString());
                     tfNome.setText(eventoSelecionadoParaEdicao.getNome());
-
                     LocalDateTime dataHora = LocalDateTime.of(eventoSelecionadoParaEdicao.getDataInicio(), eventoSelecionadoParaEdicao.getHora());
                     tfDataHoraInicio.setText(dataHora.format(DATETIME_FORMATTER));
-
                     tfEndereco.setText(eventoSelecionadoParaEdicao.getEndereco());
                     tfFotoUrl.setText(eventoSelecionadoParaEdicao.getFotoUrl());
                     cbCursos.setSelectedItem(eventoSelecionadoParaEdicao.getCurso());
