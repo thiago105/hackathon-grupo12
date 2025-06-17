@@ -39,6 +39,7 @@ exports.up = async function(knex) {
     table.string('nome', 100).notNullable();
     table.string('email', 100).notNullable().unique();
     table.string('senha_hash', 255);
+    table.string('confirmarSenha_hash', 255);
     table.integer('curso_id').unsigned().references('id').inTable('cursos');
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());

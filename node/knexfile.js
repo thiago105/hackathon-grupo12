@@ -6,9 +6,8 @@ module.exports = {
         connection: {
             host: 'localhost',
             user: 'root',
-            password: 'root',
-            database: 'hackata',
-            port: 3306
+            password: '',
+            database: 'hackata'
         },
         migrations: {
             directory: path.resolve(
@@ -20,5 +19,4 @@ module.exports = {
             )
         }
     }
-    
 }
