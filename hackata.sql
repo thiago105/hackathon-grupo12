@@ -14,7 +14,6 @@ CREATE TABLE usuarios (
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     senha_hash VARCHAR(255),
-    confirmarSenha_hash VARCHAR(255)
     curso_id INT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -52,7 +51,7 @@ CREATE TABLE inscricoes (
     usuario_id INT NOT NULL,
     evento_id INT NOT NULL,
     data_inscricao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    aprovado BOOLEAN DEFAULT FALSE,
+    aprovado INT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
