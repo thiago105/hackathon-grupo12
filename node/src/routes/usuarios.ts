@@ -32,38 +32,39 @@ router.get("/:id", async (req, res) => {
 });
 ////////////////////////////////////CRIAR/////////////////////////////////////////////
 router.post("/", async (req, res) => {
-    const registerBodySchema = z.object({
+  const registerBodySchema = z
+    .object({
       foto_url: z.string(),
       nome: z.string(),
       email: z.string().email(),
       senha_hash: z.string().min(6, { message: "Senha tem que ter no mínimo 6 dígitos" }),
-      curso_id: z.coerce.number()
+      confirmarSenha_hash: z.string().min(6, { message: "Senha tem que ter no mínimo 6 dígitos" }),
+      curso_id: z.coerce.number(),
+    }).refine((data) => data.senha_hash === data.confirmarSenha_hash, {
+      message: "As senhas não são iguais",
+      path: ["confirmarSenha_hash"],
     });
 
-    try {
+  try {
     const dados = registerBodySchema.parse(req.body);
 
-    const existeUsuario = await knex('usuarios')
+    const existeUsuario = await knex("usuarios")
       .where({ email: dados.email })
       .first();
 
-    if (existeUsuario) {
-       res.status(400).json({ errors: [{ message: 'E-mail já cadastrado.' }] });
-    }
+    if (existeUsuario) { res.status(400).json({ errors: [{ message: "E-mail já cadastrado." }] }) }
 
     const senhaHash = await hash(dados.senha_hash, 10);
 
-    await knex('usuarios').insert({
+    await knex("usuarios").insert({
       foto_url: dados.foto_url,
       nome: dados.nome,
       email: dados.email,
       senha_hash: senhaHash,
-      curso_id: dados.curso_id
+      curso_id: dados.curso_id,
     });
 
-     res.status(201).json({
-      message: 'Usuário cadastrado com sucesso!',
-    });
+     res.status(201).json({ message: "Usuário cadastrado com sucesso!" });
 
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -72,10 +73,11 @@ router.post("/", async (req, res) => {
       });
     }
 
-    console.error('Erro no cadastro:', error);
-     res.status(500).json({ message: 'Erro interno do servidor.' });
+    console.error("Erro no cadastro:", error);
+     res.status(500).json({ message: "Erro interno do servidor." });
   }
 });
+
 ////////////////////////////////////ATUALIZAR//////////////////////////////////////////
 router.put('/:id', async (req, res) => {
   const idParams = z.object({ id: z.string().min(1) });
