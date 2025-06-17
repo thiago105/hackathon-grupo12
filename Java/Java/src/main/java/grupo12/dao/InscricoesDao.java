@@ -53,10 +53,10 @@ public class InscricoesDao extends Dao {
         inscricao.setDataInscricao(rs.getTimestamp("data_inscricao").toLocalDateTime());
 
         Object aprovadoObj = rs.getObject("aprovado");
-        if (aprovadoObj != null) {
-            inscricao.setAprovado((Integer) aprovadoObj);
+        if (aprovadoObj instanceof Boolean) {
+            inscricao.setAprovado((Boolean) aprovadoObj ? 1 : 0);
         } else {
-            inscricao.setAprovado(null);
+            inscricao.setAprovado((Integer) aprovadoObj);
         }
 
         Usuarios usuario = new Usuarios();

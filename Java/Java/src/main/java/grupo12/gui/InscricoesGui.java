@@ -14,14 +14,14 @@ import java.util.List;
 public class InscricoesGui extends JFrame {
 
     private JTable tbInscricoes;
-    private JButton btConfirmar, btCancelar, btAtualizar;
+    private JButton btMarcarPresenca, btMarcarFalta, btAtualizar;
     private final InscricoesService service;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     public InscricoesGui(InscricoesService inscricoesService) {
         this.service = inscricoesService;
 
-        setTitle("Gerenciamento de Inscrições em Eventos");
+        setTitle("Controle de Presença em Eventos");
         setSize(800, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -31,7 +31,7 @@ public class InscricoesGui extends JFrame {
     }
 
     private JScrollPane montarPainelTabela() {
-        var tableModel = new DefaultTableModel(new Object[]{"ID", "Aluno", "Evento", "Data Inscrição", "Status"}, 0);
+        var tableModel = new DefaultTableModel(new Object[]{"ID", "Aluno", "Evento", "Data Inscrição", "Presença"}, 0);
         tbInscricoes = new JTable(tableModel);
         tbInscricoes.setDefaultEditor(Object.class, null);
         tbInscricoes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -48,15 +48,15 @@ public class InscricoesGui extends JFrame {
 
     private JPanel montarPainelBotoes() {
         var painel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        btConfirmar = new JButton("Confirmar Inscrição");
-        btCancelar = new JButton("Cancelar Inscrição");
+        btMarcarPresenca = new JButton("Marcar Presença");
+        btMarcarFalta = new JButton("Marcar Falta");
         btAtualizar = new JButton("Atualizar Lista");
-        btConfirmar.addActionListener(this::confirmarInscricao);
-        btCancelar.addActionListener(this::cancelarInscricao);
+        btMarcarPresenca.addActionListener(this::marcarPresenca);
+        btMarcarFalta.addActionListener(this::marcarFalta);
         btAtualizar.addActionListener(e -> atualizarTabela());
 
-        painel.add(btConfirmar);
-        painel.add(btCancelar);
+        painel.add(btMarcarPresenca);
+        painel.add(btMarcarFalta);
         painel.add(btAtualizar);
         return painel;
     }
@@ -69,9 +69,9 @@ public class InscricoesGui extends JFrame {
             Integer statusNum = inscricao.getAprovado();
             String status;
             if (statusNum != null && statusNum == 1) {
-                status = "Confirmada";
+                status = "Presente";
             } else {
-                status = "Pendente";
+                status = "Ausente";
             }
             tableModel.addRow(new Object[]{
                     inscricao.getId(),
@@ -86,36 +86,36 @@ public class InscricoesGui extends JFrame {
     private Long getIdSelecionado() {
         int selectedRow = tbInscricoes.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione uma inscrição na tabela.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Por favor, selecione um participante na tabela.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return null;
         }
         return (Long) tbInscricoes.getValueAt(selectedRow, 0);
     }
 
-    private void confirmarInscricao(ActionEvent e) {
+    private void marcarPresenca(ActionEvent e) {
         Long id = getIdSelecionado();
         if (id != null) {
             boolean sucesso = service.aprovarInscricao(id);
             if (sucesso) {
-                JOptionPane.showMessageDialog(this, "Inscrição confirmada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Presença marcada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                 atualizarTabela();
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao confirmar a inscrição.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erro ao marcar presença.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private void cancelarInscricao(ActionEvent e) {
+    private void marcarFalta(ActionEvent e) {
         Long id = getIdSelecionado();
         if (id != null) {
-            int resp = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja cancelar esta inscrição?\nEsta ação a marcará como 'Pendente'.", "Confirmação", JOptionPane.YES_NO_OPTION);
+            int resp = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja marcar falta para este participante?", "Confirmação", JOptionPane.YES_NO_OPTION);
             if (resp == JOptionPane.YES_OPTION) {
                 boolean sucesso = service.reprovarInscricao(id);
                 if (sucesso) {
-                    JOptionPane.showMessageDialog(this, "Inscrição cancelada/marcada como pendente.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Falta marcada com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                     atualizarTabela();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao cancelar a inscrição.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Erro ao marcar falta.", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
