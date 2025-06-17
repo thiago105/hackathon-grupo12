@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
         // Cria o usuário e chama o método de cadastro
         $usuario = new Usuario();
-        $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
+        $response = $usuario->cadastrar($nome, $email, $senha_hash,  $curso_id);
 
         // Verifica a resposta da API (ex: email já cadastrado)
         if (isset($response['errors']) && is_array($response['errors'])) {
