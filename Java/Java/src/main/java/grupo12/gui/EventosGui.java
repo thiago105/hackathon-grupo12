@@ -308,7 +308,7 @@ public class EventosGui extends JFrame {
                 e.printStackTrace();
                 return;
             }
-            finalizarAcao(service.atualizar(eventoDoFormulario), "alterado");
+            finalizarAcao(service.atualizar(eventoDoFormulario), "editado");
         }
     }
 

@@ -215,7 +215,7 @@ public class PalestrantesGui extends JFrame {
                 ex.printStackTrace();
                 return;
             }
-            finalizarAcao(service.atualizar(palestranteDoFormulario), "alterado");
+            finalizarAcao(service.atualizar(palestranteDoFormulario), "editado");
         }
     }
 

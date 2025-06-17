@@ -24,9 +24,9 @@ public class CursosGui extends JFrame {
         setSize(600, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
         getContentPane().add(montarPainelEntrada(), BorderLayout.NORTH);
         getContentPane().add(montarPainelSaida(), BorderLayout.CENTER);
+        atualizarTabela();
     }
 
     private JPanel montarPainelEntrada() {
@@ -66,7 +66,7 @@ public class CursosGui extends JFrame {
         tbCursos.setDefaultEditor(Object.class, null);
         tbCursos.getTableHeader().setReorderingAllowed(false);
         tbCursos.getSelectionModel().addListSelectionListener(this::selecionarLinha);
-        tbCursos.setModel(montarTableModel());
+        tbCursos.setModel(new DefaultTableModel(new Object[]{"ID", "Nome"}, 0));
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -115,12 +115,9 @@ public class CursosGui extends JFrame {
             return;
         }
         Cursos curso = getCursoDoFormulario();
-        if (curso != null && service.salvar(curso)) {
-            JOptionPane.showMessageDialog(this, "Curso salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            limparCampos();
-            atualizarTabela();
-        } else if (curso != null) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar o curso.", "Erro", JOptionPane.ERROR_MESSAGE);
+        if (curso != null) {
+            boolean sucesso = service.salvar(curso);
+            finalizarAcao(sucesso, "salvo");
         }
     }
 
@@ -131,13 +128,8 @@ public class CursosGui extends JFrame {
         }
         Cursos cursoDoFormulario = getCursoDoFormulario();
         if (cursoDoFormulario != null) {
-            if (service.atualizar(cursoDoFormulario)) {
-                JOptionPane.showMessageDialog(this, "Curso editado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                limparCampos();
-                atualizarTabela();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao editar o curso.", "Erro", JOptionPane.ERROR_MESSAGE);
-            }
+            boolean sucesso = service.atualizar(cursoDoFormulario);
+            finalizarAcao(sucesso, "editado");
         }
     }
 
@@ -148,9 +140,8 @@ public class CursosGui extends JFrame {
         }
         int resposta = JOptionPane.showConfirmDialog(this, "Deseja realmente excluir?", "Confirmação", JOptionPane.YES_NO_OPTION);
         if (resposta == JOptionPane.YES_OPTION) {
-            service.excluir(Long.valueOf(tfId.getText()));
-            limparCampos();
-            atualizarTabela();
+            boolean sucesso = service.excluir(Long.valueOf(tfId.getText()));
+            finalizarAcao(sucesso, "excluído");
         }
     }
 
@@ -165,6 +156,19 @@ public class CursosGui extends JFrame {
                     tfNome.setText(cursoSelecionadoParaEdicao.getNome());
                 }
             }
+        }
+    }
+
+    private void finalizarAcao(boolean sucesso, String operacao) {
+        String mensagem = sucesso ? "Curso " + operacao + " com sucesso!" : "Erro ao " + operacao.toLowerCase() + " o curso.";
+        String titulo = sucesso ? "Sucesso" : "Erro";
+        int tipoMsg = sucesso ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE;
+
+        JOptionPane.showMessageDialog(this, mensagem, titulo, tipoMsg);
+
+        if (sucesso) {
+            limparCampos();
+            atualizarTabela();
         }
     }
 }
