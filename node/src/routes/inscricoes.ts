@@ -4,6 +4,21 @@ import { z } from 'zod';
 
 const router = Router();
 
+/////////////////////////////////////BUSCAR ID////////////////////////////////////////////
+router.get("/usuario/:usuario_id", async (req, res) => {
+  const { usuario_id } = req.params;
+
+  try {
+    const inscricoes = await knex('inscricoes')
+      .select('evento_id')
+      .where({ usuario_id });
+
+    res.json({ inscricoes });
+  } catch (error) {
+    res.status(500).json({ errors: [{ message: 'Erro ao buscar inscrições' }] });
+  }
+});
+
 /////////////////////////////////////BUSCAR DADOS////////////////////////////////////////////
 router.get('/', (req, res) => {
   knex('inscricoes')
@@ -27,36 +42,33 @@ router.get('/', (req, res) => {
 
 /////////////////////////////////////CRIAR////////////////////////////////////////////
 router.post("/", async (req, res) => {
+  console.log("Body recebido:", req.body)
   const registerBodySchema = z.object({
-    usuario_id: z.number(),
-    evento_id: z.number()
+    usuario_id: z.coerce.number(),
+    evento_id: z.coerce.number()
   });
 
-  if (!registerBodySchema) {
-    res.status(400).json({ message: 'usuario_id ou evento_id são obrigatórios' });
-    return
-  }
-
-  const body = registerBodySchema.parse(req.body);
   try {
+    const body = registerBodySchema.parse(req.body);
 
     const inscricaoExistente = await knex('inscricoes')
       .where({ usuario_id: body.usuario_id, evento_id: body.evento_id })
-      .first()
+      .first();
 
-    if (inscricaoExistente) { res.status(400).json({ message: 'Você já se inscreveu nesse evento' }) }
+    if (inscricaoExistente) {
+      res.status(400).json({ errors: [{ message: 'Você já se inscreveu nesse evento' }] });
+    }
 
-    await knex('inscricoes')
-      .insert({
-        usuario_id: body.usuario_id,
-        evento_id: body.evento_id
-      });
-
-    res.status(201).json({
-      message: 'Inscrição realizada com sucesso!',
+    await knex('inscricoes').insert({
+      usuario_id: body.usuario_id,
+      evento_id: body.evento_id
     });
+
+    res.status(201).json({ message: 'Inscrição realizada com sucesso!' });
+
   } catch (error) {
-    res.status(400).json({ message: 'Dados inválidos ou incompletos.' });
+    console.error(error);
+    res.status(400).json({ errors: [{ message: 'Dados inválidos ou incompletos.' }] });
   }
 });
 

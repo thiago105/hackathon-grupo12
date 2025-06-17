@@ -5,7 +5,8 @@ import usuarios from './usuarios';
 import eventos from './eventos';
 import login from './login';
 import palestrantes from './palestrantes';
-import inscricoes from './inscricoes'
+import inscricoes from './inscricoes';
+import certificado from './certificado';
 
 import autenticacao from '../middlewares/autenticacao';
 
@@ -17,6 +18,7 @@ routes.use('/eventos', eventos);
 routes.use('/login', login);
 routes.use('/palestrantes', palestrantes);
 routes.use('/inscricoes', inscricoes);
+routes.use('/certificado', certificado);
 
 routes.use(autenticacao);
 
