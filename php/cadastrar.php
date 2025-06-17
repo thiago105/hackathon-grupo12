@@ -1,5 +1,43 @@
 <?php
 
+// require_once 'classes/Usuario.php';
+// require_once 'classes/Curso.php';
+
+// $erros = [];
+
+// $apiCursos = new Curso();
+// $data = $apiCursos->getCursos();
+// $cursos = $data['cursos'] ?? [];
+
+// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+
+//     $nome = $_POST['nome'];
+//     $email = $_POST['email'];
+//     $senha_hash = $_POST['senha'];
+//     $curso_id = $_POST['curso_id'];
+
+//     $usuario = new Usuario();
+//     $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
+
+
+//     if (isset($response['errors']) && is_array($response['errors'])) {
+
+//         foreach ($response['errors'] as $erro_obj) {
+
+//             if (isset($erro_obj['message'])) {
+//                 $erros[] = $erro_obj['message'];
+//             }
+//         }
+//     }
+
+//     if (empty($erros)) {
+//         header("location: ./login.php");
+//         exit;
+//     }
+
+// }
+
+
 require_once 'classes/Usuario.php';
 require_once 'classes/Curso.php';
 
@@ -9,33 +47,50 @@ $apiCursos = new Curso();
 $data = $apiCursos->getCursos();
 $cursos = $data['cursos'] ?? [];
 
+// Verificação do formulário quando enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
-    $nome = $_POST['nome'];
-    $email = $_POST['email'];
-    $senha_hash = $_POST['senha'];
-    $curso_id = $_POST['curso_id'];
+    // 1. Coleta segura dos dados do formulário
+    $nome = $_POST['nome'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $senha = $_POST['senha'] ?? '';
+    $confirmar_senha = $_POST['confirmar_senha'] ?? ''; // Coleta o novo campo de confirmação
+    $curso_id = $_POST['curso_id'] ?? '';
 
-    $usuario = new Usuario();
-    $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
+    // 2. Bloco de Validações (antes de qualquer ação com o banco ou API)
+    if (empty($nome) || empty($email) || empty($senha) || empty($curso_id)) {
+        $erros[] = 'Todos os campos são obrigatórios.';
+    }
+
+    if ($senha !== $confirmar_senha) {
+        $erros[] = 'As senhas não conferem. Por favor, tente novamente.';
+    }//<a href="login.php">Ir para login.</a>
+
+    if (strlen($senha) < 6) {
+        $erros[] = 'A senha deve ter no mínimo 6 caracteres.';
+    }
+    
+
+    if (empty($erros)) {
+
+        $usuario = new Usuario();
+        $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
 
 
-    if (isset($response['errors']) && is_array($response['errors'])) {
-
-        foreach ($response['errors'] as $erro_obj) {
-
-            if (isset($erro_obj['message'])) {
-                $erros[] = $erro_obj['message'];
+        if (isset($response['errors']) && is_array($response['errors'])) {
+            foreach ($response['errors'] as $erro_obj) {
+                if (isset($erro_obj['message'])) {
+                    $erros[] = $erro_obj['message'];
+                }
             }
+        } else {
+            header("location: ./login.php");
+            exit;
         }
     }
 
-    if (empty($erros)) {
-        header("location: ./login.php");
-        exit;
-    }
-
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -81,6 +136,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         id="senha" name="senha" required>
                 </div>
                 <div class="mb-3">
+                    <label for="confirmar_senha" class="form-label">Confirme sua Senha:</label>
+                    <input type="password" class="form-control border-dark" id="confirmar_senha" name="confirmar_senha"
+                        required>
+                </div>
+                <div class="mb-3">
                     <label for="curso_id" class="form-label">Selecione um Curso:</label>
                     <select class="form-select border-dark" id="curso_id" name="curso_id" required>
                         <?php if (empty($cursos)) { ?>
@@ -98,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 <ul>
                     <li id="msgErro" class="text-danger"> <?php if (!empty($erros)): ?>
                             <?php foreach ($erros as $erro): ?>
-                                <?= htmlspecialchars($erro) ?> <a href="login.php">Ir para login.</a><br>
+                                <?= htmlspecialchars($erro) ?> <br>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </li>

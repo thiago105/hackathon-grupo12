@@ -87,6 +87,17 @@ footer #whats span a, footer #git p a{
     background-color: #0066b3;
     color: #FFFFFF;
 }
+.btnInscrever{
+    color: #FFFFFF;
+    width: 170px;
+    border: none 0px;
+    background-color: #0066b3;   
+}
+.btnInscrever:hover{
+    transition: 1s;
+    border: none 0px;
+    background-color: #87CEEB;   
+}
 .cointainer-btn p a{
     text-decoration: none;
     color: #0066b3;

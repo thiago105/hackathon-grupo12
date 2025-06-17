@@ -4,7 +4,7 @@ class ApiServices {
     protected string $baseUrl;
 
     public function __construct() {
-        $this->baseUrl = 'http://localhost:3001/';
+        $this->baseUrl = 'http://localhost:3001';
     }
 
 protected function request(string $endpoint, string $method = 'GET', array $data = []) {
