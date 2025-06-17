@@ -68,28 +68,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $
         <?php else: ?>
 
             <div class="container">
-                <div class="row">
-                    <div class="col-10"></div>
-                    <div class="col-2"><button class="btn" id="btnFiltar"><i class="bi bi-funnel"></i> Filtros </button>
-                        <div id="filtroCurso" style="display: none;" class="mb-4">
-                            <form method="post">
-                                <label for="curso_id" style="color:white">Filtrar por curso:</label>
-                                <select name="curso_id" id="curso_id" class="form-select mb-2">
-                                    <option value="">-- Todos os cursos --</option>
-                                    <?php
-                                    $cursosUnicos = [];
-                                    foreach ($eventos as $evento) {
-                                        $cursoNome = $evento['nome_curso'];
-                                        $cursoId = $evento['curso_id'];
-                                        if (!isset($cursosUnicos[$cursoId])) {
-                                            $cursosUnicos[$cursoId] = $cursoNome;
-                                            echo "<option value=\"$cursoId\">" . htmlspecialchars($cursoNome) . "</option>";
+                <div class="row mt-3">
+                    <div class="col-11"></div>
+                    <div class="col-1 ">
+                        <div class="dropdown-container">
+                            <button class="dropdown-button">
+                                <i class="bi bi-funnel"></i> Filtros
+                            </button>
+
+                            <div class="dropdown-content">
+                                <form method="post">
+                                    <label for="curso_id" style="color:black;">Filtrar por curso:</label>
+                                    <select name="curso_id" id="curso_id" class="form-select mb-2">
+                                        <option value="">-- Todos os cursos --</option>
+                                        <?php
+                                        $cursosUnicos = [];
+                                        foreach ($eventos as $evento) {
+                                            $cursoNome = $evento['nome_curso'];
+                                            $cursoId = $evento['curso_id'];
+                                            if (!isset($cursosUnicos[$cursoId])) {
+                                                $cursosUnicos[$cursoId] = $cursoNome;
+                                                echo "<option value=\"$cursoId\">" . htmlspecialchars($cursoNome) . "</option>";
+                                            }
                                         }
-                                    }
-                                    ?>
-                                </select>
-                                <button type="submit" class="btn btn-primary">Aplicar filtro</button>
-                            </form>
+                                        ?>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary mt-2">Aplicar filtro</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

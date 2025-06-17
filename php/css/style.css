@@ -7,7 +7,11 @@ preto: #000000
 sucesso: #28a745
 erro/falha: #dc3545
 */
+body{
+    background-color: whitesmoke;
+}
 header{
+    background-color: #FFFFFF;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5)
 }
 #navBar{
@@ -145,5 +149,85 @@ form ul{
     font-weight: bold;
     background-color: #28a745;
 }
-/* sucesso: #28a745
-erro/falha: #dc3545 */
+#btnFiltar{
+    margin-top: 25px;
+    background-color: #87CEEB;
+    font-weight: bold;    
+}
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  background-color: #87cefa;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  background-color: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 200px;
+}
+
+/* Exibir o dropdown quando o mouse estiver sobre o container */
+.dropdown-container:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content select,
+.dropdown-content button {
+  width: 100%;
+  margin-top: 10px;
+}
+#card-inscrito{
+    background-color: #dddddd;
+    border: none 0px;
+    border-radius: 16px;
+    height: 300px;
+}
+.carousel-item img {
+    height: 500px;
+    object-fit: cover; /* Faz a imagem cobrir o espaço sem distorcer, cortando o excesso */
+    width: 100%;
+}
+#img-card-certificado{
+    border-radius: 16px 0px 0px 16px;
+    height: 300px;
+    object-fit: cover;
+    width: 100%;
+    
+}
+#card-inscrito .col-3{
+   padding: 0;
+}
+#card-inscrito .col-6{
+    border-left: solid 6px;
+}
+#btn-certificado{
+    display: none;
+    color: #FFFFFF;
+    background-color: #0066b3;
+}
+#btn-certificado:hover{
+    transition: 1s;
+    color: #000000;
+    background-color: #87CEEB;
+}
+#btn-pendente{
+    background-color: #00000018;
+}
