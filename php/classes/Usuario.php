@@ -12,14 +12,12 @@ class Usuario extends ApiServices
         ]);
     }
 
-    public function listarUsuario($id){
-        // 1. Constrói o endpoint dinamicamente, por exemplo: /usuarios/15
+    public function listarUsuario($id)
+    {
+        
         $endpoint = '/usuarios/' . $id;
-
-        // 2. Faz uma requisição do tipo GET para esse endpoint.
-        //    Requisições GET geralmente não enviam um corpo (body), por isso o terceiro parâmetro é nulo.
         return $this->request($endpoint, 'GET', []);
-    
+
 
     }
 

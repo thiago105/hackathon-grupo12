@@ -1,43 +1,5 @@
 <?php
 
-// require_once 'classes/Usuario.php';
-// require_once 'classes/Curso.php';
-
-// $erros = [];
-
-// $apiCursos = new Curso();
-// $data = $apiCursos->getCursos();
-// $cursos = $data['cursos'] ?? [];
-
-// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-
-//     $nome = $_POST['nome'];
-//     $email = $_POST['email'];
-//     $senha_hash = $_POST['senha'];
-//     $curso_id = $_POST['curso_id'];
-
-//     $usuario = new Usuario();
-//     $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
-
-
-//     if (isset($response['errors']) && is_array($response['errors'])) {
-
-//         foreach ($response['errors'] as $erro_obj) {
-
-//             if (isset($erro_obj['message'])) {
-//                 $erros[] = $erro_obj['message'];
-//             }
-//         }
-//     }
-
-//     if (empty($erros)) {
-//         header("location: ./login.php");
-//         exit;
-//     }
-
-// }
-
-
 require_once 'classes/Usuario.php';
 require_once 'classes/Curso.php';
 
@@ -47,56 +9,33 @@ $apiCursos = new Curso();
 $data = $apiCursos->getCursos();
 $cursos = $data['cursos'] ?? [];
 
-// Verificação do formulário quando enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
-    // 1. Coleta segura dos dados do formulário
-    $nome = $_POST['nome'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $senha = $_POST['senha'] ?? '';
-    $confirmar_senha = $_POST['confirmar_senha'] ?? ''; // Coleta o novo campo de confirmação
-    $curso_id = $_POST['curso_id'] ?? '';
+    $nome = $_POST['nome'];
+    $email = $_POST['email'];
+    $senha_hash = $_POST['senha'];
+    $curso_id = $_POST['curso_id'];
 
-    // 2. Bloco de Validações (antes de qualquer ação com o banco ou API)
-    if (empty($nome) || empty($email) || empty($senha) || empty($curso_id)) {
-        $erros[] = 'Todos os campos são obrigatórios.';
-    }
+    $usuario = new Usuario();
+    $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
 
-    if ($senha !== $confirmar_senha) {
-        $erros[] = 'As senhas não conferem. Por favor, tente novamente.';
-    }
 
-    if (strlen($senha) < 6) {
-        $erros[] = 'A senha deve ter no mínimo 6 caracteres.';
-    }
-    
-    // 3. Se não houver erros de validação, prossiga com o cadastro
-    if (empty($erros)) {
-        
-        // Criptografa a senha ANTES de enviar para a API/banco
-        $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+    if (isset($response['errors']) && is_array($response['errors'])) {
 
-        // Cria o usuário e chama o método de cadastro
-        $usuario = new Usuario();
-        $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
+        foreach ($response['errors'] as $erro_obj) {
 
-        // Verifica a resposta da API (ex: email já cadastrado)
-        if (isset($response['errors']) && is_array($response['errors'])) {
-            foreach ($response['errors'] as $erro_obj) {
-                if (isset($erro_obj['message'])) {
-                    $erros[] = $erro_obj['message'];
-                }
+            if (isset($erro_obj['message'])) {
+                $erros[] = $erro_obj['message'];
             }
-        } else {
-            // Se a API não retornou erros e o cadastro foi um sucesso, redireciona
-            header("location: ./login.php");
-            exit;
         }
     }
-    // Se a variável $erros tiver conteúdo (seja da validação inicial ou da API),
-    // o script continuará para o HTML e exibirá os erros no local que você já definiu.
-}
 
+    if (empty($erros)) {
+        header("location: ./login.php");
+        exit;
+    }
+
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -140,11 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     <label for="senha" class="form-label">Senha:</label>
                     <input type="password" value="<?= $_POST['senha'] ?? '' ?>" class="form-control border-dark"
                         id="senha" name="senha" required>
-                </div>
-                <div class="mb-3">
-                    <label for="confirmar_senha" class="form-label">Confirme sua Senha:</label>
-                    <input type="password" class="form-control border-dark" id="confirmar_senha" name="confirmar_senha"
-                        required>
                 </div>
                 <div class="mb-3">
                     <label for="curso_id" class="form-label">Selecione um Curso:</label>

@@ -1,14 +1,57 @@
 <?php
 require_once "html/header.php";
 require_once "classes/Eventos.php";
+require_once "classes/Inscricao.php";
 
-$api = new Eventos();
-$data = $api->getEventos();
+$erros = [];
 
-$eventos = $data['eventos'] ?? [];
+$apiEventos = new Eventos();
+$dataEventos = $apiEventos->getEventos();
 
-require_once "html/header.php";
+$eventos = $dataEventos['eventos'] ?? [];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['curso_id']) && $_POST['curso_id'] !== '') {
+    $cursoFiltrado = $_POST['curso_id'];
+    $eventos = array_filter($eventos, function ($evento) use ($cursoFiltrado) {
+        return $evento['curso_id'] == $cursoFiltrado;
+    });
+}
+
+$eventosInscritos = [];
+
+if (isset($_SESSION['usuario']['id'])) {
+    $inscricao = new Inscricao();
+    $inscricoes_usuario = $inscricao->getInscricoesUsuario($_SESSION['usuario']['id']);
+    $eventosInscritos = array_map(function ($insc) {
+        return $insc['evento_id'];
+    }, $inscricoes_usuario);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $_POST['evento_id'])) {
+
+    $usuario_id = $_SESSION['usuario']['id'];
+    $evento_id = $_POST['evento_id'];
+
+    $inscricao = new Inscricao();
+    $response = $inscricao->criarInscricao($usuario_id, $evento_id);
+
+    $inscricoes_usuario = $inscricao->getInscricoesUsuario($usuario_id);
+
+    // Cria um array só com os IDs dos eventos já inscritos
+    $eventosInscritos = array_map(function ($insc) {
+        return $insc['evento_id'];
+    }, $inscricoes_usuario);
+
+    if (isset($response['errors']) && is_array($response['errors'])) {
+
+        foreach ($response['errors'] as $erro_obj) {
+
+            if (isset($erro_obj['message'])) {
+                $erros[] = $erro_obj['message'];
+            }
+        }
+    }
+}
 ?>
 
 <body>
@@ -23,41 +66,68 @@ require_once "html/header.php";
                 </div>
             </div>
         <?php else: ?>
+
             <div class="container">
-
-                <div class="container">
-                    <div class="row gx-3">
-
-                        <?php foreach ($eventos as $evento): ?>
-                            <div class="col-3">
-                                <div class="mb-5 mt-5 d-flex"
-                                    style="height: 450px; background-color:rgb(75, 113, 128); border-radius: 16px;">
-                                    <div class="card w-100">
-                                        <img src="../<?= htmlspecialchars($evento['foto_url']) ?>" class="card-img-top"
-                                            alt="<?= htmlspecialchars($evento['nome']) ?>"
-                                            style="object-fit: cover; height: 230px;">
-                                        <div class="card-body">
-                                            <h5 class="card-title"><?= htmlspecialchars($evento['nome']) ?></h5>
-                                            <p class="card-text">
-                                                <i class="bi bi-map"></i> - <?= htmlspecialchars($evento['endereco']) ?><br>
-                                                <i class="bi bi-stopwatch"></i> - <?= htmlspecialchars($evento['hora']) ?><br>
-                                                <i class="bi bi-megaphone"></i> - <?= htmlspecialchars($evento['nome_palestrante']), htmlspecialchars($evento['palestrante_id'])?><br>
-                                                <i class="bi bi-journal-bookmark"></i> - <?= htmlspecialchars($evento['nome_curso']), htmlspecialchars($evento['curso_id']) ?><br> 
-                                            </p>
-                                            <a href="#" class="btn btnInscrever">Inscrever-se</a>
-                                        </div>
+                <div class="row">
+                    <div class="col-10"></div>
+                    <div class="col-2"><button class="btn" id="btnFiltar"><i class="bi bi-funnel"></i> Filtros </button>
+                        <div id="filtroCurso" style="display: none;" class="mb-4">
+                            <form method="post">
+                                <label for="curso_id" style="color:white">Filtrar por curso:</label>
+                                <select name="curso_id" id="curso_id" class="form-select mb-2">
+                                    <option value="">-- Todos os cursos --</option>
+                                    <?php
+                                    $cursosUnicos = [];
+                                    foreach ($eventos as $evento) {
+                                        $cursoNome = $evento['nome_curso'];
+                                        $cursoId = $evento['curso_id'];
+                                        if (!isset($cursosUnicos[$cursoId])) {
+                                            $cursosUnicos[$cursoId] = $cursoNome;
+                                            echo "<option value=\"$cursoId\">" . htmlspecialchars($cursoNome) . "</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                                <button type="submit" class="btn btn-primary">Aplicar filtro</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row gx-3">
+                    <?php foreach ($eventos as $evento): ?>
+                        <div class="col-3">
+                            <div class="mb-5 mt-5 d-flex"
+                                style="height: 450px; background-color:rgb(75, 113, 128); border-radius: 16px;">
+                                <div class="card w-100">
+                                    <img src="../<?= htmlspecialchars($evento['foto_url']) ?>" class="card-img-top"
+                                        alt="<?= htmlspecialchars($evento['nome']) ?>" style="object-fit: cover; height: 230px;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><?= htmlspecialchars($evento['nome']) ?></h5>
+                                        <p class="card-text">
+                                            <i class="bi bi-map"></i> - <?= htmlspecialchars($evento['endereco']) ?><br>
+                                            <i class="bi bi-stopwatch"></i> - <?= htmlspecialchars($evento['hora']) ?><br>
+                                            <i class="bi bi-megaphone"></i> -
+                                            <?= htmlspecialchars($evento['nome_palestrante']) ?><br>
+                                            <i class="bi bi-journal-bookmark"></i> -
+                                            <?= htmlspecialchars($evento['nome_curso']) ?><br>
+                                        </p>
+                                        <?php if (in_array($evento['id'], $eventosInscritos)): ?>
+                                            <button class="btn btn-secondary mt-auto" disabled>
+                                                Já inscrito
+                                            </button>
+                                        <?php else: ?>
+                                            <button onclick="abrirModal('<?= htmlspecialchars($evento['id']) ?>')"
+                                                class="btn btnInscrever mt-auto">
+                                                Inscrever-se
+                                            </button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
-                        <?php endforeach ?>
+                        </div>
+                    <?php endforeach ?>
 
-                    </div>
                 </div>
-
-
-
-
-
             </div>
         <?php endif ?>
         <div class="container">
@@ -75,8 +145,48 @@ require_once "html/header.php";
             </div>
         </div>
     <?php endif ?>
+    <div>
+    </div>
+    <div id="modalInscricao" class="modal">
+        <div class="container w-50" id="modal">
+            <form method="post">
+                <div class="container">
+                    <div class="row">
+                        <input type="hidden" id="evento_id" name="evento_id">
+                        <div class="col-12 mt-3 d-flex align-items-center justify-content-center">
+                            <h4>Tem certeza de que quer se inscrever neste evento?</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 d-flex align-items-center justify-content-center"><button type="button"
+                                class="btn" id="btn-falha" onclick="fecharModal()">Cancelar</button></div>
+                        <div class="col-6 d-flex align-items-center justify-content-center"><button type="submit"
+                                class="btn" name="atualizar" id="btn-sucesso">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function abrirModal(evento_id) {
+            document.getElementById('modalInscricao').style.display = 'flex';
+            document.getElementById('evento_id').value = evento_id;
+        }
+        function fecharModal() {
+            document.getElementById('modalInscricao').style.display = 'none';
+        }
 
+        document.getElementById('btnFiltar').addEventListener('click', function () {
+            const filtroDiv = document.getElementById('filtroCurso');
+            filtroDiv.style.display = (filtroDiv.style.display === 'none') ? 'block' : 'none';
+        })
+    </script>
 </body>
 <?php
 require_once "html/footer.php";
