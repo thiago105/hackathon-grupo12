@@ -23,13 +23,14 @@ class Usuario extends ApiServices
 
     }
 
-    public function cadastrar($nome, $email, $senha_hash, $curso_id)
+    public function cadastrar($nome, $email, $senha_hash, $confirmarSenha_hash, $curso_id)
     {
         return $this->request('/usuarios', 'POST', [
             'foto_url' => 'images/ft_perfil.webp',
             'nome' => $nome,
             'email' => $email,
             'senha_hash' => $senha_hash,
+            'confirmarSenha_hash' => $confirmarSenha_hash,
             'curso_id' => $curso_id
         ]);
     }

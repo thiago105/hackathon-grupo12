@@ -64,19 +64,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
     if ($senha !== $confirmar_senha) {
         $erros[] = 'As senhas não conferem. Por favor, tente novamente.';
-    }//<a href="login.php">Ir para login.</a>
+    }
 
-    if (strlen($senha) < 6) {
-        $erros[] = 'A senha deve ter no mínimo 6 caracteres.';
+    if (strlen($senha) < 8) {
+        $erros[] = 'A senha deve ter no mínimo 8 caracteres.';
     }
     
-
+    // 3. Se não houver erros de validação, prossiga com o cadastro
     if (empty($erros)) {
+        
+        // Criptografa a senha ANTES de enviar para a API/banco
+        $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
 
+        // Cria o usuário e chama o método de cadastro
         $usuario = new Usuario();
         $response = $usuario->cadastrar($nome, $email, $senha_hash, $curso_id);
 
-
+        // Verifica a resposta da API (ex: email já cadastrado)
         if (isset($response['errors']) && is_array($response['errors'])) {
             foreach ($response['errors'] as $erro_obj) {
                 if (isset($erro_obj['message'])) {
@@ -84,11 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 }
             }
         } else {
+            // Se a API não retornou erros e o cadastro foi um sucesso, redireciona
             header("location: ./login.php");
             exit;
         }
     }
-
+    // Se a variável $erros tiver conteúdo (seja da validação inicial ou da API),
+    // o script continuará para o HTML e exibirá os erros no local que você já definiu.
 }
 
 ?>
@@ -158,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 <ul>
                     <li id="msgErro" class="text-danger"> <?php if (!empty($erros)): ?>
                             <?php foreach ($erros as $erro): ?>
-                                <?= htmlspecialchars($erro) ?> <br>
+                                <?= htmlspecialchars($erro) ?> <a href="login.php">Ir para login.</a><br>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </li>
