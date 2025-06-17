@@ -1,10 +1,31 @@
 import Router from 'express'
 import knex from '../db/knex';
 import { z } from 'zod';
-import { hash } from 'bcrypt';
 
 const router = Router();
 
+/////////////////////////////////////BUSCAR DADOS////////////////////////////////////////////
+router.get('/', (req, res) => {
+  knex('inscricoes')
+    .join('usuarios', 'inscricoes.usuario_id', 'usuarios.id')
+    .join('eventos', 'inscricoes.evento_id', 'eventos.id')
+
+    .select(
+      'inscricoes.*',
+      'usuarios.nome as nome_usuario',
+      'eventos.nome as nome_eventos'
+    )
+
+    .then((eventosComNomes) => {
+      res.json({ inscricoes: eventosComNomes })
+    })
+    .catch((err) => {
+      console.error(err)
+      res.status(500).json({ error: 'Ocorreu um erro ao buscar os eventos.' })
+    })
+});
+
+/////////////////////////////////////CRIAR////////////////////////////////////////////
 router.post("/", async (req, res) => {
   const registerBodySchema = z.object({
     usuario_id: z.number(),

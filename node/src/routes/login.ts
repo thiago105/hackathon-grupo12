@@ -6,6 +6,7 @@ import { sign } from 'jsonwebtoken'
 
 const router = Router()
 
+/////////////////////////////////////CRIAR////////////////////////////////////////////////
 router.post("/", async (req, res) => {
   const registerBodySchema = z.object({
     email: z.string().email(),

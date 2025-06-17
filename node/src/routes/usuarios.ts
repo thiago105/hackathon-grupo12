@@ -6,6 +6,13 @@ import { hash } from 'bcrypt';
 const router = express.Router();
 
 /////////////////////////////////////BUSCAR////////////////////////////////////////////
+router.get('/', (req, res) => {
+  knex('usuarios').then((cursos) => {
+    res.json({ cursos: cursos })
+  })
+});
+
+/////////////////////////////////////BUSCAR ID////////////////////////////////////////////
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -83,15 +90,25 @@ router.put('/:id', async (req, res) => {
   try {
     const updateBody = updateBodySchema.parse(req.body);
 
+    const atualizar: { foto_url?: string; nome?: string; senha_hash?: string } = {};
+
+    if (updateBody.foto_url) atualizar.foto_url = updateBody.foto_url;
+    if (updateBody.nome) atualizar.nome = updateBody.nome;
     if (updateBody.senha_hash) {
-      updateBody.senha_hash = await hash(updateBody.senha_hash, 10)
+      atualizar.senha_hash = await hash(updateBody.senha_hash, 10);
+    }
+
+    if (Object.keys(atualizar).length === 0) {
+      res.status(400).json({ message: 'Nenhum dado enviado para atualizar' });
     }
 
     const updateAccount = await knex('usuarios')
       .where({ id })
-      .update(updateBody)
+      .update(atualizar);
 
-    if (updateAccount === 0) { res.status(404).json({ message: 'Usuário não encontrado' }) }
+    if (updateAccount === 0) {
+      res.status(404).json({ message: 'Usuário não encontrado' });
+    }
 
     const usuarioAtualizado = await knex('usuarios')
       .where({ id })
@@ -113,5 +130,41 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ message: 'Erro interno ao atualizar usuário' })
   }
 });
+
+////////////////////////////////////DELETA//////////////////////////////////////////
+router.delete('/:id', async (req, res) => {
+  const deleteParamsSchema = z.object({
+    id: z.string().min(1)
+  })
+
+  const id = +deleteParamsSchema.parse(req.params).id
+
+  try {
+    const usuario = await knex('usuarios').where({ id }).first()
+
+    if (!usuario) {
+      res.status(404).json({ message: 'Usuário não encontrado' })
+    }
+
+    await knex('usuarios').where({ id }).delete()
+
+    res.status(200).json({
+      message: 'Usuário deletado com sucesso',
+      usuarioDeletado: usuario
+    })
+
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        message: 'ID inválido',
+        errors: error.errors
+      })
+    }
+    console.error('Erro ao deletar usuário:', error)
+    res.status(500).json({
+      message: 'Erro interno ao deletar usuário'
+    })
+  }
+})
 
 export default router;
