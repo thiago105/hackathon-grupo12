@@ -159,6 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $
     <?php endif ?>
     <div>
     </div>
+    
     <div id="modalInscricao" class="modal">
         <div class="container w-50" id="modal">
             <form method="post">
@@ -185,6 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $
             </form>
         </div>
     </div>
+
     <script>
         function abrirModal(evento_id) {
             document.getElementById('modalInscricao').style.display = 'flex';

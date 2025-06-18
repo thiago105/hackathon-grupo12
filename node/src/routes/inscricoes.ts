@@ -76,7 +76,7 @@ router.post("/", async (req, res) => {
 ////////////////////////////////////DELETA//////////////////////////////////////////
 router.delete('/:id', async (req, res) => {
   const deleteParamsSchema = z.object({
-    id: z.string().min(1)
+    id: z.coerce.number().min(1)
   })
 
   const id = +deleteParamsSchema.parse(req.params).id
