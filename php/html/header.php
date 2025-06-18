@@ -3,7 +3,7 @@ session_start();
 require_once 'classes/Usuario.php';
 
 if (isset($_SESSION['usuario']['id'])) {
-    
+
     $idUsuarioLogado = $_SESSION['usuario']['id'];
 
     $apiUsuario = new Usuario();
@@ -18,7 +18,7 @@ if (isset($_SESSION['usuario']['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unialfa eventos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous" >
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"
@@ -40,10 +40,20 @@ if (isset($_SESSION['usuario']['id'])) {
             </nav>
         </div>
         <div class="col-1 d-flex justify-content-center align-items-center">
-            <?php if(isset($_SESSION['usuario'])):?>
-                <a href="#"><img id="foto_perfil" src="<?= htmlspecialchars($dadosUsuario["foto_url"]) ?>" alt="<?= htmlspecialchars($dadosUsuario["nome"]) ?>"></a>
-            <?php else:?>
-               <a href="login.php"><button type="button" class="btn"id="btnLogin"><i class="bi bi-person"></i>Login</button></a> 
-            <?php endif?>    
+            <?php if (isset($_SESSION['usuario'])): ?>
+                <div class="user-menu-container">
+
+                    <a href="#"><img id="foto_perfil" src="<?= htmlspecialchars($dadosUsuario["foto_url"]) ?>" alt="<?= htmlspecialchars($dadosUsuario["nome"]) ?>"></a>
+
+                    <div class="user-menu-content">
+                        <form method="post">
+                            <button class="btn btn-dropbox btn-perfil">Atualizar Perfil</button><br>
+                            <button class="btn btn-dropbox btn-logout"> <a href="logout.php"><i class="bi bi-box-arrow-left"></i> Sair </a> </button>
+                        </form>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php"><button type="button" class="btn" id="btnLogin"><i class="bi bi-person"></i>Login</button></a>
+            <?php endif ?>
         </div>
 </header>

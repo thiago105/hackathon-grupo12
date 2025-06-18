@@ -298,3 +298,40 @@ form ul {
     color: white;
     border: none;
 }
+.user-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+.user-menu-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0; /* Alinha o dropdown à direita do avatar */
+    z-index: 10;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    min-width: 200px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Hover para mostrar o menu */
+.user-menu-container:hover .user-menu-content {
+    display: block;
+}
+
+.user-menu-content button {
+    width: 100%;
+    margin-top: 10px;
+}
+.btn-logout a{
+    text-decoration: none;
+    color: #dc3545;
+}
+
+.btn-dropbox:hover{
+    transition: 1s;
+    background-color: #cacaca;
+}
