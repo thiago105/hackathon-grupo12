@@ -192,7 +192,7 @@ public class PalestrantesGui extends JFrame {
                 this.palestranteSelecionadoParaEdicao = service.buscarPorId(id);
                 if (this.palestranteSelecionadoParaEdicao == null || this.palestranteSelecionadoParaEdicao.getId() == null) {
                     JOptionPane.showMessageDialog(this, "O ID informado no formulário não corresponde a um palestrante válido.", "Aviso", JOptionPane.WARNING_MESSAGE);
-                    this.palestranteSelecionadoParaEdicao = null; // Garante que continue nulo
+                    this.palestranteSelecionadoParaEdicao = null;
                     return;
                 }
             } catch (NumberFormatException nfe) {
