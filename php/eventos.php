@@ -100,7 +100,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $
                     </div>
                 </div>
                 <div class="row gx-3">
-                    <?php foreach ($eventos as $evento): ?>
+                    <?php foreach ($eventos as $evento): 
+                        $horarioSemSegundos = substr($evento['hora'], 0, 5);
+                        $dateTime = new DateTime($evento['data_inicio']);
+                        $fuso_horario_brasil = new DateTimeZone('America/Sao_Paulo');
+                        $dateTime->setTimezone($fuso_horario_brasil);
+                        $data_formatada = $dateTime->format('d/m/Y');
+                    ?>
                         <div class="col-3">
                             <div class="mb-5 mt-5 d-flex"
                                 style="height: 450px; background-color:rgb(75, 113, 128); border-radius: 16px;">
@@ -111,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $
                                         <h5 class="card-title"><?= htmlspecialchars($evento['nome']) ?></h5>
                                         <p class="card-text">
                                             <i class="bi bi-map"></i> - <?= htmlspecialchars($evento['endereco']) ?><br>
-                                            <i class="bi bi-stopwatch"></i> - <?= htmlspecialchars($evento['hora']) ?><br>
+                                            <i class="bi bi-calendar-date"></i> - <?= htmlspecialchars($data_formatada) ?> - <?= htmlspecialchars($horarioSemSegundos) ?><br>
                                             <i class="bi bi-megaphone"></i> -
                                             <?= htmlspecialchars($evento['nome_palestrante']) ?><br>
                                             <i class="bi bi-journal-bookmark"></i> -

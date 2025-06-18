@@ -14,7 +14,7 @@ class Usuario extends ApiServices
 
     public function listarUsuario($id)
     {
-        
+
         $endpoint = '/usuarios/' . $id;
         return $this->request($endpoint, 'GET', []);
 
@@ -30,5 +30,17 @@ class Usuario extends ApiServices
             'senha_hash' => $senha_hash,
             'curso_id' => $curso_id
         ]);
+    }
+
+    public function atualizar($id, $nome, $foto_url, $senha_hash)
+    {
+        return $this->request("/usuarios/$id", 'PUT', [
+            'nome' => $nome,
+            'foto_url' => $foto_url,
+            'senha_hash' => $senha_hash
+        ]);
+    }
+    public function apagarUsuario($id){
+        return $this->request( "/usuarios/$id", 'DELETE');
     }
 }

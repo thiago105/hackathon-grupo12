@@ -7,119 +7,144 @@ preto: #000000
 sucesso: #28a745
 erro/falha: #dc3545
 */
-body{
+body {
     background-color: whitesmoke;
 }
-header{
+
+header {
     background-color: #FFFFFF;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5)
 }
-#navBar{
+
+#navBar {
     width: 100%;
     height: 80px;
 }
-#navBar #btnLogin{
+
+#navBar #btnLogin {
     background-color: #87CEEB;
 }
-#navBar #btnLogin:hover{
+
+#navBar #btnLogin:hover {
     background-color: #0066b3;
     color: #FFFFFF;
     border-radius: 16px;
     transition: 1s;
 }
-#navBar nav ul{
+
+#navBar nav ul {
     list-style: none;
     display: flex;
     gap: 20px;
     padding: 0;
     margin: 0;
 }
-#navBar nav ul li a{
+
+#navBar nav ul li a {
     text-decoration: none;
     color: #000000;
     padding: 5px 10px;
 }
-#navBar nav ul li a:hover{
+
+#navBar nav ul li a:hover {
     text-decoration: none;
     color: #FFFFFF;
     background-color: #0066b3;
     border-radius: 16px;
     transition: 1s;
 }
-#foto_perfil{
+
+#foto_perfil {
     height: 60px;
     width: 60px;
     border-radius: 100%;
 }
-footer{
+
+footer {
     background-color: #0066b3;
     color: #FFFFFF;
 }
-footer h3{
+
+footer h3 {
     margin-top: 12px;
 }
-footer #whats span a, footer #git p a{
+
+footer #whats span a,
+footer #git p a {
     text-decoration: none;
     color: #FFFFFF;
 }
+
 /* index.php */
 .carousel-item img {
     height: 500px;
-    object-fit: cover; /* Faz a imagem cobrir o espaço sem distorcer, cortando o excesso */
+    object-fit: cover;
+    /* Faz a imagem cobrir o espaço sem distorcer, cortando o excesso */
     width: 100%;
 }
-#erro-msg{
+
+#erro-msg {
     height: 500px;
     width: 100%;
     background-color: #87CEEB;
     border-radius: 16px;
 }
+
 /* login.php */
-.cointainer-btn{
+.cointainer-btn {
     display: flex;
     justify-content: center;
     width: 100%;
 }
-.cointainer-btn #btnLgn{
+
+.cointainer-btn #btnLgn {
     width: 55%;
     border: none 0px;
     background-color: #87CEEB;
 }
-.cointainer-btn #btnLgn:hover{
+
+.cointainer-btn #btnLgn:hover {
     border-radius: 16px;
     transition: 1s;
     background-color: #0066b3;
     color: #FFFFFF;
 }
-.btnInscrever{
+
+.btnInscrever {
     color: #FFFFFF;
     width: 170px;
     border: none 0px;
-    background-color: #0066b3;   
+    background-color: #0066b3;
 }
-.btnInscrever:hover{
+
+.btnInscrever:hover {
     transition: 1s;
     border: none 0px;
-    background-color: #87CEEB;   
+    background-color: #87CEEB;
 }
-.cointainer-btn p a{
+
+.cointainer-btn p a {
     text-decoration: none;
     color: #0066b3;
     font-weight: bold;
 }
-form ul{
+
+form ul {
     height: 30px;
     display: flex;
     align-items: center;
     justify-content: baseline;
     padding: 0;
 }
-#msgErro{
+
+#msgErro {
     color: red;
     list-style: none;
 }
-.modal{
-    display: none; /*Esconde a div*/
+
+.modal {
+    display: none;
+    /*Esconde a div*/
     position: fixed;
     z-index: 999;
     left: 0;
@@ -129,105 +154,147 @@ form ul{
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.5); /* preto tranparente */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* preto tranparente */
 }
-#modal{
+
+#modal {
     background-color: #FFFFFF;
     border: none;
     border-radius: 16px;
     height: 200px;
 }
-#modal #btn-falha{
+
+#modal #btn-falha {
     margin-top: 80px;
     width: 80%;
     font-weight: bold;
     background-color: #dc3545;
 }
-#modal #btn-sucesso{
+
+#modal #btn-sucesso {
     margin-top: 80px;
     width: 80%;
     font-weight: bold;
     background-color: #28a745;
 }
-#btnFiltar{
+
+#btnFiltar {
     margin-top: 25px;
     background-color: #87CEEB;
-    font-weight: bold;    
+    font-weight: bold;
 }
+
 .dropdown-container {
-  position: relative;
-  display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
 .dropdown-button {
-  background-color: #87cefa;
-  border: none;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 8px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+    background-color: #87cefa;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .dropdown-content {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 1;
-  background-color: white;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  min-width: 200px;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    min-width: 200px;
 }
 
 /* Exibir o dropdown quando o mouse estiver sobre o container */
 .dropdown-container:hover .dropdown-content {
-  display: block;
+    display: block;
 }
 
 .dropdown-content select,
 .dropdown-content button {
-  width: 100%;
-  margin-top: 10px;
+    width: 100%;
+    margin-top: 10px;
 }
-#card-inscrito{
+
+#card-inscrito {
     background-color: #dddddd;
     border: none 0px;
     border-radius: 16px;
     height: 300px;
 }
+
 .carousel-item img {
     height: 500px;
-    object-fit: cover; /* Faz a imagem cobrir o espaço sem distorcer, cortando o excesso */
+    object-fit: cover;
+    /* Faz a imagem cobrir o espaço sem distorcer, cortando o excesso */
     width: 100%;
 }
-#img-card-certificado{
+
+#img-card-certificado {
     border-radius: 16px 0px 0px 16px;
     height: 300px;
     object-fit: cover;
     width: 100%;
-    
+
 }
-#card-inscrito .col-3{
-   padding: 0;
+
+#card-inscrito .col-3 {
+    padding: 0;
 }
-#card-inscrito .col-6{
+
+#card-inscrito .col-6 {
     border-left: solid 6px;
 }
-#btn-certificado{
+
+#btn-certificado {
     display: none;
     color: #FFFFFF;
     background-color: #0066b3;
 }
-#btn-certificado:hover{
+
+#btn-certificado:hover {
     transition: 1s;
     color: #000000;
     background-color: #87CEEB;
 }
-#btn-pendente{
-    background-color: #00000018;
+
+/* .btn-cancelar{
+    background-color: #dc3545;
+    color: #FFFFFF;
+}
+.btn-cancelar:hover{
+    background-color: #52141a;
+    color: #FFFFFF;
+    transition: 1s;
+}
+.btn-pendente, .btn-cancelar {
+    width: 100%;
+} */
+
+#btn-pendente {
+    background-color: #979797;
+    color: rgb(0, 0, 0);
+    border: none;
+    
+}
+.btn-cancelar {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+.btn-cancelar:hover {
+    transition: 1s;
+    background-color: #57161d;
+    color: white;
+    border: none;
 }

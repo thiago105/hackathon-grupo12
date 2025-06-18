@@ -32,6 +32,9 @@ router.get('/:usuarioId/:eventoId', async (req, res) => {
           'cursos.nome as curso_nome'
         ).first()
 
+      const data = new Date(dados.data_inicio);
+      const dataFormatada = `${String(data.getDate()).padStart(2, '0')}/${String(data.getMonth() + 1).padStart(2, '0')}/${data.getFullYear()}`;
+
       const doc = new PDFDocument()
       res.setHeader('Content-Type', 'application/pdf')
       res.setHeader('Content-Disposition', 'inline; filename=certificado.pdf')
@@ -45,7 +48,7 @@ router.get('/:usuarioId/:eventoId', async (req, res) => {
       doc.text(`Evento: ${dados.evento_nome}`)
       doc.text(`Curso: ${dados.curso_nome}`)
       doc.text(`Palestrante: ${dados.palestrante_nome}`)
-      doc.text(`Data: ${new Date(dados.data_inicio).toLocaleDateString()}`)
+      doc.text(`Data: ${dataFormatada}`)
       doc.text(`Local do evento: ${dados.endereco}`)
 
       doc.end()
