@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $
             <div class="row">
                 <div class="col-12 mb-5 mt-5 d-flex justify-content-center align-items-center"
                     style="height: 400px; background-color:rgb(75, 113, 128); border-radius: 16px;">
-                    <h2 style="color: #FFFFFF;"><i class="bi bi-person"></i> Faça login para ter acesso.</h2>
+                    <h2 style="color: #FFFFFF;"><i class="bi bi-person"></i> Faça <a href="login.php" style="color: #FFFFFF;">login</a> para ter acesso.</h2>
                 </div>
             </div>
         </div>
