@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $
                                 <div class="mb-5 mt-5 d-flex"
                                     style="height: 450px; background-color:rgb(75, 113, 128); border-radius: 16px;">
                                     <div class="card w-100">
-                                        <img src="../<?= htmlspecialchars($evento['foto_url']) ?>" class="card-img-top"
+                                        <img src="../Java/java/<?= htmlspecialchars($evento['foto_url']) ?>" class="card-img-top"
                                             alt="<?= htmlspecialchars($evento['nome']) ?>" style="object-fit: cover; height: 230px;">
                                         <div class="card-body">
                                             <h5 class="card-title"><?= htmlspecialchars($evento['nome']) ?></h5>
