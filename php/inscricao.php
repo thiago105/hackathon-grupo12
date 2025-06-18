@@ -68,14 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $
                         <?php if (isset($eventosInscritos[$evento['id']])): ?>
                             <div class="col-3">
                                 <div class="mb-5 mt-5 d-flex"
-                                    style="height: 450px; background-color:rgb(75, 113, 128); border-radius: 16px;">
-                                    <div class="card w-100">
+                                    style="height: 450px; background-color:rgb(75, 113, 128); border-radius: 16px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5)">
+                                    <div class="card w-100 ">
                                         <img src="../Java/java/<?= htmlspecialchars($evento['foto_url']) ?>" class="card-img-top"
                                             alt="<?= htmlspecialchars($evento['nome']) ?>" style="object-fit: cover; height: 230px;">
                                         <div class="card-body">
                                             <h5 class="card-title"><?= htmlspecialchars($evento['nome']) ?></h5>
                                             <p class="card-text">
-                                                <i class="bi bi-map"></i> - <?= htmlspecialchars($evento['endereco']) ?><br>
+                                                <i class="bi bi-geo-alt-fill"></i></i> - <?= htmlspecialchars($evento['endereco']) ?><br>
                                                 <i class="bi bi-calendar-date"></i> - <?= htmlspecialchars($data_formatada) ?> -
                                                 <?= htmlspecialchars($horarioSemSegundos) ?><br>
                                                 <i class="bi bi-megaphone"></i> -
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario']['id'], $
 
     <div id="modalInscricao" class="modal" style="display: none;">
         <div class="container w-50" id="modal">
-            <form method="post">
+            <form method="POST">
                 <input type="hidden" id="inscricao_id" name="inscricao_id">
                 <div class="container">
                     <div class="row">

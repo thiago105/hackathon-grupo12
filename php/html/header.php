@@ -5,7 +5,6 @@ require_once 'classes/Usuario.php';
 if (isset($_SESSION['usuario']['id'])) {
 
     $idUsuarioLogado = $_SESSION['usuario']['id'];
-
     $apiUsuario = new Usuario();
     $dadosUsuario = $apiUsuario->listarUsuario($idUsuarioLogado);
 }
@@ -43,17 +42,19 @@ if (isset($_SESSION['usuario']['id'])) {
             <?php if (isset($_SESSION['usuario'])): ?>
                 <div class="user-menu-container">
 
-                    <a href="#"><img id="foto_perfil" src="<?= htmlspecialchars($dadosUsuario["foto_url"]) ?>" alt="<?= htmlspecialchars($dadosUsuario["nome"]) ?>"></a>
+                    <a href="#"><img id="foto_perfil" src="<?= htmlspecialchars($dadosUsuario["foto_url"]) ?>"
+                            alt="<?= htmlspecialchars($dadosUsuario["nome"]) ?>"></a>
 
                     <div class="user-menu-content">
                         <form method="post">
-                            <button class="btn btn-dropbox btn-perfil">Atualizar Perfil</button><br>
-                            <button class="btn btn-dropbox btn-logout"> <a href="logout.php"><i class="bi bi-box-arrow-left"></i> Sair </a> </button>
+                            <button class="btn btn-dropbox btn-logout"> <a href="logout.php"><i
+                                        class="bi bi-box-arrow-left"></i> Sair </a> </button>
                         </form>
                     </div>
                 </div>
             <?php else: ?>
-                <a href="login.php"><button type="button" class="btn" id="btnLogin"><i class="bi bi-person"></i>Login</button></a>
+                <a href="login.php"><button type="button" class="btn" id="btnLogin"><i
+                            class="bi bi-person"></i>Login</button></a>
             <?php endif ?>
         </div>
 </header>

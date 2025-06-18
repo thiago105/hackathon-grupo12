@@ -40,7 +40,8 @@ class Usuario extends ApiServices
             'senha_hash' => $senha_hash
         ]);
     }
+    
     public function apagarUsuario($id){
-        return $this->request( "/usuarios/$id", 'DELETE');
+        return $this->request( "/usuarios/$id", 'DEL');
     }
 }
